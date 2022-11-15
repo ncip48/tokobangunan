@@ -20,3 +20,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/keranjang', [App\Http\Controllers\KeranjangController::class, 'tambahKeranjangApi']);
 Route::delete('/keranjang', [App\Http\Controllers\KeranjangController::class, "hapusKeranjang"]);
+Route::post('/cari', [App\Http\Controllers\SearchController::class, 'index'])->name('api.search');

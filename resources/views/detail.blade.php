@@ -421,7 +421,7 @@
                                     "<a class='ps-product__remove' href='#'>" +
                                     "<i class='icon-cross' id='remove-cart_items'></i>" +
                                     "</a>" +
-                                    "<a href='" + data.data.cart[i].url_produk + "'" +
+                                    "<a href='" + data.data.cart[i].url_produk + "'>" +
                                     data.data.cart[i].nama_produk +
                                     "</a>" +
                                     "<p><strong>Oleh: </strong>" +

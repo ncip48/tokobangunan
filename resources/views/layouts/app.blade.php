@@ -79,13 +79,17 @@
                     <a class="ps-logo" href="{{ url('/') }}"><img src="{{ asset('img/logo.png') }}"
                             alt=""></a>
                 </div>
-                <div class="header__content-center">
-                    <form class="ps-form--quick-search" action="{{ url('cari') }}" method="get">
+                <div class="header__content-center" id="id-search">
+                    <form class="ps-form--quick-search" action="">
                         @csrf
                         <input class="form-control" type="text" name="search"
-                            placeholder="Cari produk, toko, brand...">
-                        <button>Search</button>
+                            placeholder="Cari produk, toko, brand..." autocomplete="off" id="query-search">
+                        <button type="button" id="btn-search">Cari</button>
                     </form>
+                    <div class="bg-light p-4"
+                        style="position: absolute;max-height:300px;width:600px;z-index:1;opacity:0;overflow:hidden;overflow-y:scroll"
+                        id="box-search">
+                    </div>
                 </div>
                 <div class="header__content-right">
                     <div class="header__actions">
@@ -734,6 +738,78 @@
     <script src="{{ asset('/js/sticky-sidebar.min.js') }}"></script>
     <script src="{{ asset('/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('/js/main.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $("#btn-search").click(function() {
+                var query = $("#query-search").val();
+                if (!query) {
+                    $("#box-search").stop().animate({
+                        opacity: 0
+                    }, 1);
+                    return
+                }
+                let html = '';
+                $.ajax({
+                    url: "{{ route('api.search') }}",
+                    method: "POST",
+                    data: {
+                        search: query
+                    },
+                    success: function(data) {
+                        // console.log(data)
+                        if (data.success) {
+                            let toko = data.stores;
+                            let produk = data.products;
+                            if (toko.length == 0 && produk.length == 0) {
+                                html +=
+                                    '<div class="ps-cart-item"><p>Tidak ada hasil</p></div>';
+                            }
+                            if (toko.length > 0) {
+                                html +=
+                                    '<div class="ps-block--shop-features"><div class="ps-block__header justify-content-start align-items-center"><i class="mb-3 fa fa-shopping-basket" aria-hidden="true"></i>';
+                                html +=
+                                    '<h5 class="mb-3 ml-2">Toko </h5></div><div class="ps-block__content" ><ul class = "ps-list--link" >';
+                                toko.forEach(function(item) {
+                                    html += '<li><a href="/toko/' + item.prefix + '">' +
+                                        item.nama_toko + '</a></li>';
+                                });
+                                html += '</ul></div></div>';
+                            }
+                            if (produk.length > 0) {
+                                html +=
+                                    '<div class="ps-block--shop-features"><div class="ps-block__header justify-content-start align-items-center"><i class="mb-3 fa fa-shopping-bag" aria-hidden="true"></i>';
+                                html +=
+                                    '<h5 class="mb-3 ml-2">Produk </h5></div><div class="ps-block__content" ><ul class = "ps-list--link" >';
+                                produk.forEach(function(item) {
+                                    html += '<li><a href="/produk/' + item.prefix +
+                                        '">' +
+                                        item.nama_produk + '</a></li>';
+                                });
+                                html += '</ul></div></div>';
+                            }
+                            $("#box-search").html(html);
+                        }
+                        // $("#box-search").html(data);
+                        $("#box-search").stop().animate({
+                            opacity: 1
+                        }, 1);
+                    }
+                });
+            });
+        });
+
+        const dropdown_menu = document.querySelector('#box-search');
+        const dropdown_li = document.querySelector('#btn-search');
+
+        dropdown_li.addEventListener('click', () => {
+            document.addEventListener('mouseup', function(e) {
+                if (!dropdown_menu.contains(e.target)) {
+                    dropdown_menu.style.opacity = 0;
+                }
+            });
+
+        });
+    </script>
 
     @stack('customScript')
 </body>

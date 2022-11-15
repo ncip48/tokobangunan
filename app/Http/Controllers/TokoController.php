@@ -14,6 +14,9 @@ class TokoController extends Controller
     {
         $toko = Toko::where('prefix', $prefix)->first();
         $products = Produk::where('id_toko', $toko->id)->paginate(8);
+        $products->map(function ($product) {
+            $product['reviews'] = round(Ulasan::where('id_produk', $product->id)->avg('star'), 1);
+        });
         $total_product = Produk::where('id_toko', $toko->id)->count();
         $categories = Kategori::select('kategori.id', 'kategori.nama_kategori', 'kategori.prefix', 'produk.id_kategori')
             ->join('produk', 'kategori.id', '=', 'produk.id_kategori')

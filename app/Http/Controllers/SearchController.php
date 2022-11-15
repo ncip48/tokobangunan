@@ -14,9 +14,10 @@ class SearchController extends Controller
         $stores = Toko::where('nama_toko', 'LIKE', '%' . $search . '%')->get();
         $products = Produk::where('nama_produk', 'LIKE', '%' . $search . '%')->get();
         $result = [
+            'success' => true,
             'stores' => $stores,
             'products' => $products
         ];
-        // return response()->json($result);
+        return response()->json($result);
     }
 }

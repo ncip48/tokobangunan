@@ -20,7 +20,6 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/produk/{prefix}', [App\Http\Controllers\ProductController::class, 'detail']);
-Route::get('/cari', [App\Http\Controllers\SearchController::class, 'index']);
 Route::get('/toko/{prefix}', [App\Http\Controllers\TokoController::class, 'getToko']);
 Route::get('/favorite', [\App\Http\Controllers\FavoriteController::class, 'index'])->name('favorite');
 Route::post('/favorite', [App\Http\Controllers\FavoriteController::class, 'tambahFavorite']);
