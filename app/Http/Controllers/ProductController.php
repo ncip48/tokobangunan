@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Favorite;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Models\Toko;
@@ -51,6 +52,50 @@ class ProductController extends Controller
             $favorite = 0;
         }
         return view('detail', compact('product', 'toko', 'brand', 'relates', 'sameBrands', 'reviews', 'countReviews', 'favorite'));
+    }
+
+    public function getByKategori($prefix)
+    {
+        $products = Produk::select('produk.*', 'toko.nama_toko', 'toko.prefix as prefix_toko')
+            ->join('toko', 'produk.id_toko', '=', 'toko.id')
+            ->join('kategori', 'produk.id_kategori', '=', 'kategori.id')
+            ->where('kategori.prefix', $prefix)
+            ->paginate(12);
+        $products->map(function ($product) {
+            $product['reviews'] = round(Ulasan::where('id_produk', $product->id)->avg('star'), 1);
+            $product['countReviews'] = Ulasan::where('id_produk', $product->id)->count();
+        });
+        $total_product = Produk::select('produk.*', 'toko.nama_toko', 'toko.prefix as prefix_toko')
+            ->join('toko', 'produk.id_toko', '=', 'toko.id')
+            ->join('kategori', 'produk.id_kategori', '=', 'kategori.id')
+            ->where('kategori.prefix', $prefix)
+            ->count();
+        $category = Kategori::where('prefix', $prefix)->first();
+        $categories = Kategori::all();
+        $merks = Merk::all();
+        return view('kategori', compact('products', 'total_product', 'category', 'categories', 'merks'));
+    }
+
+    public function getByMerk($prefix)
+    {
+        $products = Produk::select('produk.*', 'toko.nama_toko', 'toko.prefix as prefix_toko')
+            ->join('toko', 'produk.id_toko', '=', 'toko.id')
+            ->join('merk', 'produk.id_merk', '=', 'merk.id')
+            ->where('merk.prefix', $prefix)
+            ->paginate(12);
+        $products->map(function ($product) {
+            $product['reviews'] = round(Ulasan::where('id_produk', $product->id)->avg('star'), 1);
+            $product['countReviews'] = Ulasan::where('id_produk', $product->id)->count();
+        });
+        $total_product = Produk::select('produk.*', 'toko.nama_toko', 'toko.prefix as prefix_toko')
+            ->join('toko', 'produk.id_toko', '=', 'toko.id')
+            ->join('merk', 'produk.id_merk', '=', 'merk.id')
+            ->where('merk.prefix', $prefix)
+            ->count();
+        $merek = Merk::where('prefix', $prefix)->first();
+        $categories = Kategori::all();
+        $merks = Merk::all();
+        return view('merk', compact('products', 'total_product', 'merek', 'categories', 'merks'));
     }
 
     public function index()

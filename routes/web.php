@@ -24,4 +24,6 @@ Route::get('/toko/{prefix}', [App\Http\Controllers\TokoController::class, 'getTo
 Route::get('/favorite', [\App\Http\Controllers\FavoriteController::class, 'index'])->name('favorite');
 Route::post('/favorite', [App\Http\Controllers\FavoriteController::class, 'tambahFavorite']);
 Route::delete('/favorite', [\App\Http\Controllers\FavoriteController::class, 'deleteFavorite']);
+Route::get('/kategori/{prefix}', [App\Http\Controllers\ProductController::class, 'getByKategori']);
+Route::get('/merk/{prefix}', [App\Http\Controllers\ProductController::class, 'getByMerk']);
 // Route::post('/keranjang', [App\Http\Controllers\KeranjangController::class, 'tambahKeranjang']);
