@@ -245,7 +245,7 @@
                                     <div class="ps-product__container"><a class="ps-product__vendor"
                                             href="{{ url('toko/' . $product->prefix_toko) }}">{{ $product->nama_toko }}</a>
                                         <div class="ps-product__content"><a class="ps-product__title"
-                                                href="product-default.html">{{ $product->nama_produk }}</a>
+                                                href="{{ url('produk/' . $product->prefix) }}">{{ $product->nama_produk }}</a>
                                             <div class="ps-product__rating">
                                                 <div class="br-wrapper br-theme-fontawesome-stars">
                                                     <div class="br-widget br-readonly"> {!! str_repeat(
