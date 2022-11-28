@@ -7597,7 +7597,7 @@ textarea.form-control {
 }
 
 .ps-widget--account-dashboard .ps-widget__content ul li a:hover {
-  background-color: #fcb800;
+  background-color: #dd2400;
   color: #fff;
 }
 
@@ -7606,7 +7606,7 @@ textarea.form-control {
 }
 
 .ps-widget--account-dashboard .ps-widget__content ul li.active {
-  background-color: #fcb800;
+  background-color: #dd2400;
 }
 
 .ps-widget--account-dashboard .ps-widget__content ul li.active a {

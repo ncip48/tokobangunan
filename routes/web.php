@@ -26,4 +26,11 @@ Route::post('/favorite', [App\Http\Controllers\FavoriteController::class, 'tamba
 Route::delete('/favorite', [\App\Http\Controllers\FavoriteController::class, 'deleteFavorite']);
 Route::get('/kategori/{prefix}', [App\Http\Controllers\ProductController::class, 'getByKategori']);
 Route::get('/merk/{prefix}', [App\Http\Controllers\ProductController::class, 'getByMerk']);
-// Route::post('/keranjang', [App\Http\Controllers\KeranjangController::class, 'tambahKeranjang']);
+Route::prefix('/profile')->middleware('auth')->group(function () {
+    Route::get('/', [\App\Http\Controllers\ProfileController::class, 'index']);
+    Route::get('/notifikasi', [\App\Http\Controllers\ProfileController::class, 'notifikasi']);
+    Route::get('/pesanan', [\App\Http\Controllers\ProfileController::class, 'pesanan']);
+    Route::get('/alamat', [\App\Http\Controllers\ProfileController::class, 'alamat']);
+    Route::patch('/user', [\App\Http\Controllers\ProfileController::class, 'updateUser']);
+    Route::patch('/photo', [\App\Http\Controllers\ProfileController::class, 'updatePhotoProfile']);
+});
