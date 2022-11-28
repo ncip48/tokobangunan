@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class ProfileController extends Controller
 {
@@ -54,11 +55,18 @@ class ProfileController extends Controller
         $user = User::find($auth->id);
         //create upload function
         $image = $request->file('image');
-        $name = time() . '.' . $image->getClientOriginalExtension();
-        $destinationPath = public_path('/img/pp/');
-        $image->move($destinationPath, $name);
+        if ($image) {
+            $name = time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('/img/pp/');
+            $image->move($destinationPath, $name);
+            $msg = 'Berhasil mengubah foto profile';
+        } else {
+            File::delete(public_path('/img/pp/' . $user->image));
+            $name = '';
+            $msg = 'Berhasil menghapus foto profile';
+        }
         $user->image = $name;
         $user->save();
-        return redirect()->back()->with('success', 'Berhasil mengubah foto profile');
+        return redirect()->back()->with('success', $msg);
     }
 }
