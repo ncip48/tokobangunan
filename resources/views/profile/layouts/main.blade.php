@@ -33,8 +33,11 @@
                                     <li
                                         class="{{ Request::is('profile/alamat') || Request::is('profile/tambah-alamat') ? 'active' : '' }}">
                                         <a href="{{ url('profile/alamat') }}"><i class="icon-map-marker"></i> Alamat
-                                            Saya</a></li>
-                                    <li><a href="#"><i class="icon-store"></i> Terakhir Dilihat</a></li>
+                                            Saya</a>
+                                    </li>
+                                    <li class="{{ Request::is('profile/terakhir-dilihat') ? 'active' : '' }}"><a
+                                            href="{{ url('profile/terakhir-dilihat') }}"><i class="icon-store"></i> Terakhir
+                                            Dilihat</a></li>
                                     {{-- <li><a href="#"><i class="icon-heart"></i> Favorite</a></li> --}}
                                     <li><a style="cursor: pointer" aria-current="page"
                                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i

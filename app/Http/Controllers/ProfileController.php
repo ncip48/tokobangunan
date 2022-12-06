@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TerakhirDilihat;
+use App\Models\Ulasan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -68,5 +70,21 @@ class ProfileController extends Controller
         $user->image = $name;
         $user->save();
         return redirect()->back()->with('success', $msg);
+    }
+
+    public function terakhirDilihat()
+    {
+        $auth = Auth::user();
+        $terakhir_dilihats = TerakhirDilihat::select('terakhir_dilihat.*', 'produk.*', 'toko.nama_toko as nama_toko')
+            ->where('terakhir_dilihat.id_user', $auth->id)
+            ->join('produk', 'produk.id', '=', 'terakhir_dilihat.id_produk')
+            ->join('toko', 'toko.id', '=', 'produk.id_toko')
+            ->orderBy('terakhir_dilihat.created_at', 'desc')
+            ->get();
+        $terakhir_dilihats->map(function ($product) {
+            $product['reviews'] = round(Ulasan::where('id_produk', $product->id_produk)->avg('star'), 1);
+            $product['countReviews'] = Ulasan::where('id_produk', $product->id_produk)->count();
+        });
+        return view('profile.terakhir_dilihat', compact('terakhir_dilihats', 'auth'));
     }
 }

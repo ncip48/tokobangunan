@@ -36,6 +36,7 @@ Route::prefix('/profile')->middleware('auth')->group(function () {
     Route::get('/alamat/{id}', [\App\Http\Controllers\AlamatController::class, 'editAlamat']);
     Route::patch('/alamat', [\App\Http\Controllers\AlamatController::class, 'editAlamatAction']);
     Route::delete('/alamat/{id}', [\App\Http\Controllers\AlamatController::class, 'hapusAlamat']);
+    Route::get('/terakhir-dilihat', [\App\Http\Controllers\ProfileController::class, 'terakhirDilihat']);
     Route::patch('/user', [\App\Http\Controllers\ProfileController::class, 'updateUser']);
     Route::patch('/photo', [\App\Http\Controllers\ProfileController::class, 'updatePhotoProfile']);
 });

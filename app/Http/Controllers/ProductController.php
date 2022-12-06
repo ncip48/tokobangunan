@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Produk;
 use App\Models\Toko;
 use App\Models\Merk;
+use App\Models\TerakhirDilihat;
 use App\Models\Ulasan;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,6 +51,24 @@ class ProductController extends Controller
             $favorite = Favorite::where('id_user', Auth::user()->id)->where('id_produk', $product->id)->count();
         } else {
             $favorite = 0;
+        }
+
+        //cek apakah user login
+        if (Auth::user()) {
+            $last = TerakhirDilihat::where('id_user', Auth::user()->id)->where('id_produk', $product->id)->count();
+            if ($last == 0) {
+                if ($last == 6) {
+                    TerakhirDilihat::where('id_user', Auth::user()->id)->orderBy('updated_at', 'asc')->first()->delete();
+                }
+                TerakhirDilihat::create([
+                    'id_user' => Auth::user()->id,
+                    'id_produk' => $product->id
+                ]);
+            } else {
+                TerakhirDilihat::where('id_user', Auth::user()->id)->where('id_produk', $product->id)->update([
+                    'updated_at' => now()
+                ]);
+            }
         }
         return view('detail', compact('product', 'toko', 'brand', 'relates', 'sameBrands', 'reviews', 'countReviews', 'favorite'));
     }
