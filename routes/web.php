@@ -30,7 +30,12 @@ Route::prefix('/profile')->middleware('auth')->group(function () {
     Route::get('/', [\App\Http\Controllers\ProfileController::class, 'index']);
     Route::get('/notifikasi', [\App\Http\Controllers\ProfileController::class, 'notifikasi']);
     Route::get('/pesanan', [\App\Http\Controllers\ProfileController::class, 'pesanan']);
-    Route::get('/alamat', [\App\Http\Controllers\ProfileController::class, 'alamat']);
+    Route::get('/alamat', [\App\Http\Controllers\AlamatController::class, 'index'])->name('alamat-user');
+    Route::get('/tambah-alamat', [\App\Http\Controllers\AlamatController::class, 'tambahAlamat']);
+    Route::post('/tambah-alamat', [\App\Http\Controllers\AlamatController::class, 'tambahAlamatAction']);
+    Route::get('/alamat/{id}', [\App\Http\Controllers\AlamatController::class, 'editAlamat']);
+    Route::patch('/alamat', [\App\Http\Controllers\AlamatController::class, 'editAlamatAction']);
+    Route::delete('/alamat/{id}', [\App\Http\Controllers\AlamatController::class, 'hapusAlamat']);
     Route::patch('/user', [\App\Http\Controllers\ProfileController::class, 'updateUser']);
     Route::patch('/photo', [\App\Http\Controllers\ProfileController::class, 'updatePhotoProfile']);
 });

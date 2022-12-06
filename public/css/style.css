@@ -8373,6 +8373,15 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   color: #000;
 }
 
+.ps-alamat .ps-alamat__content > p {
+    color: #000;
+}
+
+.ps-alamat .ps-alamat__price.sale {
+    color: #f30;
+    margin-bottom: 0px;
+}
+
 .ps-product .ps-product__content.hover {
   display: block;
   position: absolute;
@@ -8385,6 +8394,26 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   visibility: hidden;
   opacity: 0;
 }
+
+.ps-alamat .ps-alamat__content.hover {
+    position: absolute;
+    top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 89%;
+    padding: 20px;
+    border: 1px solid silver;
+    visibility: hidden;
+    opacity: 0;
+    background-color: white;
+    height: 100%;
+    min-height: 200px;
+  }
+
+.ps-alamat .ps-alamat__container {
+    padding-top: 10px;
+  }
 
 .ps-product .ps-product__container {
   padding-top: 10px;
@@ -8414,6 +8443,19 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   visibility: visible;
   opacity: 1;
 }
+
+.ps-alamat:hover .ps-alamat__content {
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+  }
+
+  .ps-alamat:hover .ps-alamat__content.hover {
+    height: auto;
+    visibility: visible;
+    opacity: 1;
+    transition: ease all 0.5s;
+  }
 
 .ps-product:hover.ps-product--inner {
   border: none;
