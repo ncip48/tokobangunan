@@ -55,9 +55,9 @@
                         <select class="form-control" name="kota">
                             <option value="">--Pilih Kabupaten/Kota--</option>
                             @foreach ($kotas as $kota)
-                                <option value="{{ $kota->city_id . '#' . $kota->city_name }}"
+                                <option value="{{ $kota->city_id . '#' . $kota->type . ' ' . $kota->city_name }}"
                                     @if (explode('#', $alamat->id_kota)[0] == $kota->city_id) selected @endif>
-                                    {{ $kota->city_name }}</option>
+                                    {{ $kota->type }} {{ $kota->city_name }}</option>
                             @endforeach
                         </select>
                     </div>

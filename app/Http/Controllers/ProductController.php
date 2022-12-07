@@ -57,7 +57,8 @@ class ProductController extends Controller
         if (Auth::user()) {
             $last = TerakhirDilihat::where('id_user', Auth::user()->id)->where('id_produk', $product->id)->count();
             if ($last == 0) {
-                if ($last == 6) {
+                $total_last = TerakhirDilihat::where('id_user', Auth::user()->id)->count();
+                if ($total_last == 6) {
                     TerakhirDilihat::where('id_user', Auth::user()->id)->orderBy('updated_at', 'asc')->first()->delete();
                 }
                 TerakhirDilihat::create([

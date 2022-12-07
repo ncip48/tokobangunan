@@ -36,8 +36,13 @@
                                             Saya</a>
                                     </li>
                                     <li class="{{ Request::is('profile/terakhir-dilihat') ? 'active' : '' }}"><a
-                                            href="{{ url('profile/terakhir-dilihat') }}"><i class="icon-store"></i> Terakhir
+                                            href="{{ url('profile/terakhir-dilihat') }}"><i class="icon-eye"></i> Terakhir
                                             Dilihat</a></li>
+                                    <li>
+                                        <a target="blank" href="{{ url('seller') }}"><i class="icon-store"></i>
+                                            Toko
+                                            Saya</a>
+                                    </li>
                                     {{-- <li><a href="#"><i class="icon-heart"></i> Favorite</a></li> --}}
                                     <li><a style="cursor: pointer" aria-current="page"
                                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i

@@ -7,6 +7,7 @@ use App\Models\Produk;
 use App\Models\Toko;
 use App\Models\Ulasan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TokoController extends Controller
 {
@@ -26,5 +27,26 @@ class TokoController extends Controller
             ->avg('star'), 1);
         $total_review = Ulasan::where('id_toko', $toko->id)->count();
         return view('toko', compact('toko', 'products', 'categories', 'reviews', 'total_product', 'total_review'));
+    }
+
+    public function checkToko()
+    {
+        $id = Auth::user()->id;
+        $toko = Toko::where('id_user', $id)->first();
+        if ($toko) {
+            return redirect()->route('dashboard-toko');
+        } else {
+            return redirect()->route('buat-toko');
+        }
+    }
+
+    public function dashboardToko()
+    {
+        $id = Auth::user()->id;
+        $toko = Toko::where('id_user', $id)->first();
+        $total_product = Produk::where('id_toko', $toko->id)->count();
+        $total_pesanan = 0;
+        $total_review = Ulasan::where('id_toko', $toko->id)->count();
+        return view('toko.dashboard', compact('toko', 'total_product', 'total_pesanan', 'total_review'));
     }
 }
