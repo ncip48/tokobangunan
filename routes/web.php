@@ -48,12 +48,12 @@ Route::prefix('/seller')->middleware('auth')->group(function () {
     Route::post('/buat-toko', [\App\Http\Controllers\TokoController::class, 'buatTokoAction']);
     Route::get('/edit-toko', [\App\Http\Controllers\TokoController::class, 'editToko']);
     Route::patch('/edit-toko', [\App\Http\Controllers\TokoController::class, 'editTokoAction']);
-    Route::get('/produk', [\App\Http\Controllers\TokoController::class, 'produk']);
+    Route::get('/produk', [\App\Http\Controllers\TokoController::class, 'produk'])->name('produk-toko');
     Route::get('/tambah-produk', [\App\Http\Controllers\TokoController::class, 'tambahProduk']);
     Route::post('/tambah-produk', [\App\Http\Controllers\TokoController::class, 'tambahProdukAction']);
-    Route::get('/edit-produk/{id}', [\App\Http\Controllers\TokoController::class, 'editProduk']);
-    Route::patch('/edit-produk', [\App\Http\Controllers\TokoController::class, 'editProdukAction']);
-    Route::delete('/hapus-produk/{id}', [\App\Http\Controllers\TokoController::class, 'hapusProduk']);
+    Route::get('/produk/{id}', [\App\Http\Controllers\TokoController::class, 'editProduk']);
+    Route::patch('/produk', [\App\Http\Controllers\TokoController::class, 'editProdukAction']);
+    Route::delete('/produk/{id}', [\App\Http\Controllers\TokoController::class, 'hapusProduk']);
     Route::get('/pesanan', [\App\Http\Controllers\TokoController::class, 'pesanan']);
     Route::get('/pesanan/{id}', [\App\Http\Controllers\TokoController::class, 'detailPesanan']);
     Route::patch('/pesanan/{id}', [\App\Http\Controllers\TokoController::class, 'updatePesanan']);

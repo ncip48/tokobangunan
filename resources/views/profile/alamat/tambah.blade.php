@@ -18,12 +18,18 @@
                         <label>Nama Penerima</label>
                         <input class="form-control" type="text" placeholder="Masukkan Nama Penerima"
                             name="nama_penerima">
+                        @error('nama_penerima')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label>Nomor Penerima</label>
                         <input class="form-control" type="text" placeholder="Masukkan Nomor Penerima" name="no_hp">
+                        @error('no_hp')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="col-sm-12">
@@ -31,6 +37,9 @@
                         <label>Alamat</label>
                         <textarea class="form-control" name="alamat" id="alamat" cols="30" rows="5"
                             placeholder="Masukkan Alamat"></textarea>
+                        @error('alamat')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -43,6 +52,9 @@
                                     {{ $provinsi->province }}</option>
                             @endforeach
                         </select>
+                        @error('provinsi')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -51,6 +63,9 @@
                         <select class="form-control" name="kota">
                             <option value="">--Pilih Kabupaten/Kota--</option>
                         </select>
+                        @error('kota')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -59,12 +74,18 @@
                         <select class="form-control" name="kecamatan">
                             <option value="">--Pilih Kecamatan--</option>
                         </select>
+                        @error('kecamatan')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label>Kode Pos</label>
                         <input class="form-control" type="text" placeholder="Masukkan Kode Pos" name="kode_pos">
+                        @error('kode_pos')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </div>

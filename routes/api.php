@@ -26,3 +26,4 @@ Route::get('/provinsi', [App\Http\Controllers\WilayahController::class, 'getProv
 Route::get('/kota/{id}', [App\Http\Controllers\WilayahController::class, 'getKota']);
 Route::get('/kecamatan/{id}', [App\Http\Controllers\WilayahController::class, 'getKecamatan']);
 Route::post('/ongkir', [App\Http\Controllers\WilayahController::class, 'getOngkir']);
+Route::get('/merk/{id}', [App\Http\Controllers\ProductController::class, 'getMerkAPI']);

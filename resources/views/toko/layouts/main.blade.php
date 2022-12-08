@@ -69,7 +69,7 @@
                     </a>
                 </div>
                 <div class="header__content-right">
-                    <div class="header__actions">
+                    {{-- <div class="header__actions">
                         @auth
                             <a class="header__extra" href="{{ url('favorite') }}">
                                 <i class="icon-heart"></i>
@@ -125,7 +125,7 @@
                                 </div>
                             @endguest
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -205,8 +205,8 @@
             </div>
         </div>
         <div class="navigation--mobile">
-            <div class="navigation__left"><a class="ps-logo" href="index.html"><img
-                        src="{{ asset('img/logo2.png') }}" alt="" /></a></div>
+            <div class="navigation__left"><a class="ps-logo" href="index.html"><img src="{{ asset('img/logo2.png') }}"
+                        alt="" /></a></div>
             <div class="navigation__right">
                 <div class="header__actions">
                     <div class="ps-block--user-header">
@@ -253,7 +253,10 @@
                                             href="{{ url('seller/dashboard') }}"><i class="icon-user"></i>
                                             Dashboard</a>
                                     </li>
-                                    <li><a href="#"><i class="icon-bag"></i> Produk</a></li>
+                                    <li
+                                        class="{{ Request::is('seller/produk') || Request::is('seller/tambah-produk') ? 'active' : '' }}">
+                                        <a href="{{ url('seller/produk') }}"><i class="icon-bag"></i> Produk</a>
+                                    </li>
                                     <li><a href="#"><i class="icon-cashier"></i> Penjualan Saya</a></li>
                                     <li
                                         class="{{ Request::is('profile/alamat') || Request::is('profile/tambah-alamat') ? 'active' : '' }}">

@@ -118,7 +118,9 @@ class ProductController extends Controller
         return view('merk', compact('products', 'total_product', 'merek', 'categories', 'merks'));
     }
 
-    public function index()
+    public function getMerkAPI($id)
     {
+        $merks = Merk::where('id_kategori', $id)->get();
+        return WilayahController::customResponse(true, 'success get merk', $merks);
     }
 }

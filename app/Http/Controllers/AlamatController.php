@@ -35,6 +35,23 @@ class AlamatController extends Controller
     public function tambahAlamatAction(Request $request)
     {
         $auth = Auth::user();
+        $request->validate([
+            'nama_penerima' => 'required',
+            'no_hp' => 'required',
+            'provinsi' => 'required',
+            'kota' => 'required',
+            'kecamatan' => 'required',
+            'alamat' => 'required',
+            'kode_pos' => 'required',
+        ], [
+            'nama_penerima.required' => 'Nama penerima harus diisi',
+            'no_hp.required' => 'Nomor HP harus diisi',
+            'provinsi.required' => 'Provinsi harus diisi',
+            'kota.required' => 'Kota harus diisi',
+            'kecamatan.required' => 'Kecamatan harus diisi',
+            'alamat.required' => 'Alamat harus diisi',
+            'kode_pos.required' => 'Kode pos harus diisi',
+        ]);
         $request['id_user'] = $auth->id;
         $request['id_provinsi'] = explode('#', $request->provinsi)[0];
         $request['nama_provinsi'] = explode('#', $request->provinsi)[1];

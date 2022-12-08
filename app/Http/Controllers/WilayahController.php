@@ -13,7 +13,7 @@ class WilayahController extends Controller
         $this->RajaOngkirUrl = env('RAJAONGKIR_URL');
     }
 
-    public function customResponse($status, $message, $data = null)
+    public static function customResponse($status, $message, $data = null)
     {
         return response()->json([
             'status' => $status,
