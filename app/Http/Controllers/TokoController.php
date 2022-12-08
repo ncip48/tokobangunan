@@ -9,10 +9,18 @@ use App\Models\Toko;
 use App\Models\Ulasan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class TokoController extends Controller
 {
+    public function __construct()
+    {
+        $this->RajaOngkirKey = env('RAJAONGKIR_KEY');
+        $this->RajaOngkirUrl = env('RAJAONGKIR_URL');
+    }
+
     public function getToko($prefix)
     {
         $toko = Toko::where('prefix', $prefix)->first();
@@ -121,8 +129,9 @@ class TokoController extends Controller
 
     public function editProduk($id)
     {
-        $id = Auth::user()->id;
-        $toko = Toko::where('id_user', $id)->first();
+        $id = Crypt::decrypt($id);
+        $id_user = Auth::user()->id;
+        $toko = Toko::where('id_user', $id_user)->first();
         $product = Produk::find($id);
         $categories = Kategori::all();
         $merks = Merk::all();
@@ -182,5 +191,137 @@ class TokoController extends Controller
         $product = Produk::find($id);
         $product->delete();
         return redirect()->route('produk-toko')->with('success', 'Produk berhasil dihapus');
+    }
+
+    public function buatToko()
+    {
+        $toko = Toko::where('id_user', Auth::user()->id)->first();
+        if ($toko) {
+            return redirect()->route('dashboard-toko');
+        }
+        $response = Http::withHeaders([
+            'key' => $this->RajaOngkirKey
+        ])->get($this->RajaOngkirUrl . 'province');
+        $data = json_decode($response->body(), false);
+        $provinsis = $data->rajaongkir->results;
+        return view('toko.toko.buat', compact('provinsis'));
+    }
+
+    public function buatTokoAction(Request $request)
+    {
+        $id = Auth::user()->id;
+        $request->validate(
+            [
+                'nama_toko' => 'required',
+                'deskripsi_toko' => 'required',
+                'alamat_toko' => 'required',
+                'provinsi' => 'required',
+                'kota' => 'required',
+                'kecamatan' => 'required',
+                'gambar_toko' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            ],
+            [
+                'nama_toko.required' => 'Nama toko harus diisi',
+                'deskripsi_toko.required' => 'Deskripsi toko harus diisi',
+                'alamat_toko.required' => 'Alamat toko harus diisi',
+                'provinsi.required' => 'Provinsi toko harus diisi',
+                'kota.required' => 'Kota toko harus diisi',
+                'kecamatan.required' => 'Kecamatan toko harus diisi',
+                'gambar_toko.image' => 'Gambar toko harus berupa gambar',
+                'gambar_toko.mimes' => 'Gambar toko harus berupa gambar dengan format jpeg, png, jpg, gif, svg',
+                'gambar_toko.max' => 'Gambar toko maksimal berukuran 10MB',
+            ]
+        );
+        $toko = new Toko();
+        if ($request->gambar_toko) {
+            $imageName = time() . '.' . $request->gambar_toko->extension();
+            $request->gambar_toko->move(public_path('img/toko'), $imageName);
+            $toko->gambar_toko = $imageName;
+        }
+        $toko->nama_toko = $request->nama_toko;
+        $toko->alamat_toko = $request->alamat_toko;
+        $toko->deskripsi_toko = $request->deskripsi_toko;
+        $toko->latitude = 0;
+        $toko->longitude = 0;
+        $toko->prefix = Str::random(5);
+        $toko->id_provinsi = explode('#', $request->provinsi)[0];
+        $toko->nama_provinsi = explode('#', $request->provinsi)[1];
+        $toko->id_kota = explode('#', $request->kota)[0];
+        $toko->nama_kota = explode('#', $request->kota)[1];
+        $toko->id_kecamatan = explode('#', $request->kecamatan)[0];
+        $toko->nama_kecamatan = explode('#', $request->kecamatan)[1];
+        $toko->id_user = $id;
+        $toko->save();
+        return redirect()->route('dashboard-toko')->with('success', 'Toko berhasil dibuat');
+    }
+
+    public function editToko()
+    {
+        $id = Auth::user()->id;
+        $toko = Toko::where('id_user', $id)->first();
+        $response = Http::withHeaders([
+            'key' => $this->RajaOngkirKey
+        ])->get($this->RajaOngkirUrl . 'province');
+        $data = json_decode($response->body(), false);
+        $provinsis = $data->rajaongkir->results;
+        $response = Http::withHeaders([
+            'key' => $this->RajaOngkirKey
+        ])->get($this->RajaOngkirUrl . 'city?province=' . $toko->id_provinsi);
+        $data = json_decode($response->body(), false);
+        $kotas = $data->rajaongkir->results;
+        $response = Http::withHeaders([
+            'key' => $this->RajaOngkirKey
+        ])->get($this->RajaOngkirUrl . 'subdistrict?city=' . $toko->id_kota);
+        $data = json_decode($response->body(), false);
+        $kecamatans = $data->rajaongkir->results;
+        return view('toko.toko.edit', compact('toko', 'provinsis', 'kotas', 'kecamatans'));
+    }
+
+    public function editTokoAction(Request $request)
+    {
+        $id = Auth::user()->id;
+        $toko = Toko::where('id_user', $id)->first();
+        $request->validate(
+            [
+                'nama_toko' => 'required',
+                'deskripsi_toko' => 'required',
+                'alamat_toko' => 'required',
+                'provinsi' => 'required',
+                'kota' => 'required',
+                'kecamatan' => 'required',
+                'gambar_toko' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            ],
+            [
+                'nama_toko.required' => 'Nama toko harus diisi',
+                'deskripsi_toko.required' => 'Deskripsi toko harus diisi',
+                'alamat_toko.required' => 'Alamat toko harus diisi',
+                'provinsi.required' => 'Provinsi toko harus diisi',
+                'kota.required' => 'Kota toko harus diisi',
+                'kecamatan.required' => 'Kecamatan toko harus diisi',
+                'gambar_toko.image' => 'Gambar toko harus berupa gambar',
+                'gambar_toko.mimes' => 'Gambar toko harus berupa gambar dengan format jpeg, png, jpg, gif, svg',
+                'gambar_toko.max' => 'Gambar toko maksimal berukuran 10MB',
+            ]
+        );
+        if ($request->gambar_toko) {
+            $imageName = time() . '.' . $request->gambar_toko->extension();
+            $request->gambar_toko->move(public_path('img/toko'), $imageName);
+            $toko->gambar_toko = $imageName;
+        }
+        $toko->nama_toko = $request->nama_toko;
+        $toko->deskripsi_toko = $request->deskripsi_toko;
+        $toko->alamat_toko = $request->alamat_toko;
+        $toko->latitude = 0;
+        $toko->longitude = 0;
+        $toko->prefix = Str::random(5);
+        $toko->id_provinsi = explode('#', $request->provinsi)[0];
+        $toko->nama_provinsi = explode('#', $request->provinsi)[1];
+        $toko->id_kota = explode('#', $request->kota)[0];
+        $toko->nama_kota = explode('#', $request->kota)[1];
+        $toko->id_kecamatan = explode('#', $request->kecamatan)[0];
+        $toko->nama_kecamatan = explode('#', $request->kecamatan)[1];
+        $toko->id_user = $id;
+        $toko->save();
+        return redirect()->back()->with('success', 'Toko berhasil diubah');
     }
 }

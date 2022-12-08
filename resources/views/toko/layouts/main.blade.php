@@ -9,6 +9,10 @@
     });
 @endphp
 
+@php
+    $toko = \App\Models\Toko::where('id_user', Auth::user()->id)->first();
+@endphp
+
 @auth
     @php
         $favorite = \App\Models\Favorite::where('id_user', Auth::user()->id)->count();
@@ -234,45 +238,64 @@
                 <div class="col-lg-4">
                     <div class="ps-section__left">
                         <aside class="ps-widget--account-dashboard">
-                            <div class="ps-widget__header"><img
-                                    src="{{ $toko->gambar_toko ? asset('img/toko/' . $toko->gambar_toko) : 'http://nouthemes.net/html/martfury/img/users/3.jpg' }}"
-                                    alt=""
-                                    style="height:60px;width:60px;object-fit:cover;flex-basis:71px;max-width:70px">
-                                <figure>
-                                    <figcaption>{{ $toko->nama_toko }}</figcaption>
-                                    <p><a href="#">{{ $toko->nama_kota }}</a></p>
-                                </figure>
+                            <div class="ps-widget__header">
+                                @if ($toko)
+                                    <img src="{{ $toko->gambar_toko ? asset('img/toko/' . $toko->gambar_toko) : 'http://nouthemes.net/html/martfury/img/users/3.jpg' }}"
+                                        alt=""
+                                        style="height:60px;width:60px;object-fit:cover;flex-basis:71px;max-width:70px">
+                                    <figure>
+                                        <figcaption>{{ $toko->nama_toko }}</figcaption>
+                                        <p><a href="#">{{ $toko->nama_kota }}</a></p>
+                                    </figure>
+                                @else
+                                    <figure>
+                                        <figcaption>Halo, Selamat datang,</figcaption>
+                                        <p><a href="#">Silahkan lengkapi form di samping untuk mendaftar sebagai
+                                                toko/seller/penjual</a></p>
+                                    </figure>
+                                @endif
                             </div>
                             <div class="ps-widget__content">
                                 <ul>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                        style="display: none;">
-                                        @csrf
-                                    </form>
-                                    <li class="{{ Request::is('seller/dashboard') ? 'active' : '' }}"><a
-                                            href="{{ url('seller/dashboard') }}"><i class="icon-user"></i>
-                                            Dashboard</a>
-                                    </li>
-                                    <li
-                                        class="{{ Request::is('seller/produk') || Request::is('seller/tambah-produk') ? 'active' : '' }}">
-                                        <a href="{{ url('seller/produk') }}"><i class="icon-bag"></i> Produk</a>
-                                    </li>
-                                    <li><a href="#"><i class="icon-cashier"></i> Penjualan Saya</a></li>
-                                    <li
-                                        class="{{ Request::is('profile/alamat') || Request::is('profile/tambah-alamat') ? 'active' : '' }}">
-                                        <a href="{{ url('profile/alamat') }}"><i class="icon-cash-dollar"></i>
-                                            Rekening
-                                            Saya</a>
-                                    </li>
-                                    <li>
-                                        <a target="blank" href="{{ url('seller') }}"><i class="icon-store"></i>
-                                            Edit Toko
-                                            Saya</a>
-                                    </li>
-                                    {{-- <li><a href="#"><i class="icon-heart"></i> Favorite</a></li> --}}
-                                    <li><a style="cursor: pointer" aria-current="page"
-                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
-                                                class="icon-power-switch"></i>Logout</a></li>
+
+                                    @if (!$toko)
+                                        <li class="{{ Request::is('seller/buat-toko') ? 'active' : '' }}">
+                                            <a target="blank" href="{{ url('seller/buat-toko') }}"><i
+                                                    class="icon-store"></i>
+                                                Buat Toko
+                                            </a>
+                                        </li>
+                                    @else
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                            style="display: none;">
+                                            @csrf
+                                        </form>
+                                        <li class="{{ Request::is('seller/dashboard') ? 'active' : '' }}"><a
+                                                href="{{ url('seller/dashboard') }}"><i class="icon-user"></i>
+                                                Dashboard</a>
+                                        </li>
+                                        <li
+                                            class="{{ Request::is('seller/produk') || Request::is('seller/tambah-produk') ? 'active' : '' }}">
+                                            <a href="{{ url('seller/produk') }}"><i class="icon-bag"></i> Produk</a>
+                                        </li>
+                                        <li><a href="#"><i class="icon-cashier"></i> Penjualan Saya</a></li>
+                                        <li
+                                            class="{{ Request::is('profile/alamat') || Request::is('profile/tambah-alamat') ? 'active' : '' }}">
+                                            <a href="{{ url('profile/alamat') }}"><i class="icon-cash-dollar"></i>
+                                                Rekening
+                                                Saya</a>
+                                        </li>
+                                        <li class="{{ Request::is('seller/edit-toko') ? 'active' : '' }}">
+                                            <a target="blank" href="{{ url('seller/edit-toko') }}"><i
+                                                    class="icon-store"></i>
+                                                Edit Toko
+                                                Saya</a>
+                                        </li>
+                                        {{-- <li><a href="#"><i class="icon-heart"></i> Favorite</a></li> --}}
+                                        <li><a style="cursor: pointer" aria-current="page"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
+                                                    class="icon-power-switch"></i>Logout</a></li>
+                                    @endif
                                 </ul>
                             </div>
                         </aside>
