@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alamat;
+use App\Models\Toko;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -74,19 +76,33 @@ class WilayahController extends Controller
     public function getOngkir(Request $request)
     {
         $request = (object) $request->json()->all();
-        $response = Http::withHeaders([
-            'key' => $this->RajaOngkirKey
-        ])->post($this->RajaOngkirUrl . 'cost', [
-            'origin' => $request->asal,
-            'originType' => 'subdistrict',
-            'destination' => $request->tujuan,
-            'destinationType' => 'subdistrict',
-            'weight' => $request->berat,
-            'courier' => 'jnt'
-        ]);
-        $data = json_decode($response->body(), false);
-        $data = $data->rajaongkir->results;
-        $data = ['ongkir' => $data[0]->costs[0]->cost[0]->value];
-        return $this->customResponse(true, 'Berhasil mengambil data ongkir', $data);
+        $alamat = Alamat::find($request->id_alamat)->first();
+        $dataKeranjang = $request->data;
+        $dataKeranjang = json_decode(json_encode($dataKeranjang));
+        $dataKeranjang = array_map(function ($item) {
+            $alamat_asal = Alamat::where('id', $item->id_alamat)->first();
+            $district_toko = Toko::where('id', $item->id_toko)->first();
+            $sum_products = array_sum(array_map(function ($item) {
+                return $item->qty;
+            }, $item->products));
+            $response = Http::withHeaders([
+                'key' => $this->RajaOngkirKey
+            ])->post($this->RajaOngkirUrl . 'cost', [
+                'origin' => $alamat_asal->id_kecamatan,
+                'originType' => 'subdistrict',
+                'destination' => $district_toko->id_kecamatan,
+                'destinationType' => 'subdistrict',
+                'weight' => $sum_products * 1000,
+                'courier' => 'jnt'
+            ]);
+            $data = json_decode($response->body(), false);
+            $data = $data->rajaongkir->results;
+            return [
+                'nama_toko' => $district_toko->nama_toko,
+                'ongkir' => $data[0]->costs[0]->cost[0]->value,
+            ];
+        }, $dataKeranjang);
+        // return $dataKeranjang;
+        return $this->customResponse(true, 'Berhasil mengambil data ongkir', $dataKeranjang);
     }
 }

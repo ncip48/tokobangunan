@@ -127,8 +127,10 @@
                                     <div class="ps-cart__footer">
                                         <h3>Sub Total:<strong id="sub-total_count">
                                                 @currency($cartNum->sum('total'))</strong></h3>
-                                        <figure><a class="ps-btn" href="shopping-cart.html">Lihat Keranjang</a><a
-                                                class="ps-btn" href="checkout.html">Checkout</a></figure>
+                                        <figure>
+                                            <a class="ps-btn" href="{{ url('keranjang') }}">Lihat Keranjang</a>
+                                            {{-- <a class="ps-btn" href="checkout.html">Checkout</a> --}}
+                                        </figure>
                                     </div>
                                 </div>
                             </div>

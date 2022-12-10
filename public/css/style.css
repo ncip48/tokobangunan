@@ -11230,7 +11230,9 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 }
 
 .ps-table--shopping-cart tbody tr td .ps-product--cart {
-  max-width: 500px;
+  /* max-width: 500px; */
+  /* max-width: 250PX; */
+  width: 250px;
 }
 
 .ps-table--shopping-cart tbody tr td:last-child {

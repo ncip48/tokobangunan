@@ -26,6 +26,7 @@ Route::post('/favorite', [App\Http\Controllers\FavoriteController::class, 'tamba
 Route::delete('/favorite', [\App\Http\Controllers\FavoriteController::class, 'deleteFavorite']);
 Route::get('/kategori/{prefix}', [App\Http\Controllers\ProductController::class, 'getByKategori']);
 Route::get('/merk/{prefix}', [App\Http\Controllers\ProductController::class, 'getByMerk']);
+Route::get('/keranjang', [\App\Http\Controllers\KeranjangController::class, 'index'])->name('keranjang');
 Route::prefix('/profile')->middleware('auth')->group(function () {
     Route::get('/', [\App\Http\Controllers\ProfileController::class, 'index']);
     Route::get('/notifikasi', [\App\Http\Controllers\ProfileController::class, 'notifikasi']);
