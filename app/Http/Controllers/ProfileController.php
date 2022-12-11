@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notifikasi;
 use App\Models\TerakhirDilihat;
 use App\Models\Ulasan;
 use App\Models\User;
@@ -86,5 +87,15 @@ class ProfileController extends Controller
             $product['countReviews'] = Ulasan::where('id_produk', $product->id_produk)->count();
         });
         return view('profile.terakhir_dilihat', compact('terakhir_dilihats', 'auth'));
+    }
+
+    public function notifikasi()
+    {
+        $auth = Auth::user();
+        $notifikasis = Notifikasi::where('id_user', $auth->id)
+            ->where('type', 'user')
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        return view('profile.notifikasi', compact('notifikasis', 'auth'));
     }
 }

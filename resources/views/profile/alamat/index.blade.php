@@ -24,9 +24,14 @@
                         <div class="ps-alamat__container">
                             <div class="ps-alamat__content"
                                 style="border:1px solid silver;padding:20px;max-height:200px;height:200px">
-                                <span>Nama Penerima: {{ $alamat->nama_penerima }}</span>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span>{{ $alamat->nama_penerima }}</span>
+                                    @if ($alamat->is_main == 1)
+                                        <span class="ml-3 badge badge-pill badge-warning">Utama</span>
+                                    @endif
+                                </div>
                                 <br>
-                                <span>Nomor HP: {{ $alamat->no_hp }}</span>
+                                <span>{{ $alamat->no_hp }}</span>
                                 <hr>
                                 <p class="ps-alamat__price sale">
                                     {{ $alamat->alamat }}, {{ $alamat->nama_kecamatan }}, {{ $alamat->nama_kota }},

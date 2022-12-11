@@ -28,7 +28,9 @@
                                             href="{{ url('profile') }}"><i class="icon-user"></i> Informasi
                                             Akun</a>
                                     </li>
-                                    <li><a href="#"><i class="icon-alarm-ringing"></i> Notifikasi</a></li>
+                                    <li class="{{ Request::is('profile/notifikasi') ? 'active' : '' }}"><a
+                                            href="{{ url('profile/notifikasi') }}"><i class="icon-alarm-ringing"></i>
+                                            Notifikasi</a></li>
                                     <li><a href="#"><i class="icon-papers"></i> Pesanan</a></li>
                                     <li
                                         class="{{ Request::is('profile/alamat') || Request::is('profile/tambah-alamat') ? 'active' : '' }}">

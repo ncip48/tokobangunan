@@ -82,6 +82,15 @@
                             value="{{ $alamat->kode_pos }}">
                     </div>
                 </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch1" name="is_main"
+                                value="{{ $alamat->is_main }}" @if ($alamat->is_main == 1) checked @endif>
+                            <label class="custom-control-label" for="customSwitch1">Jadikan Alamat Utama?</label>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="form-group submit">

@@ -90,6 +90,14 @@
                         @enderror
                     </div>
                 </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch1" name="is_main">
+                            <label class="custom-control-label" for="customSwitch1">Jadikan Alamat Utama?</label>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="form-group submit">
