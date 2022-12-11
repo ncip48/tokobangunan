@@ -9,7 +9,7 @@
                 <h1>Review Pesanan</h1>
             </div>
             <div class="ps-section__content">
-                <form class="ps-form--checkout" action="do_action" method="post">
+                <form class="ps-form--checkout">
                     <div class="row">
                         <div class="col-xl-7 col-lg-8 col-md-12 col-sm-12  ">
                             <div class="ps-form__billing-info">
@@ -191,10 +191,9 @@
     </script>
     <script>
         const payButton = document.querySelector('#button-bayar');
-        payButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('y');
-            snap.pay('{{ $snap_token }}', {
+
+        const showSnap = (token) => {
+            snap.pay(token, {
                 // Optional
                 onSuccess: function(result) {
                     /* You may add your own js here, this is just example */
@@ -220,6 +219,38 @@
                     location.reload();
                 }
             });
+        }
+
+        const callApi = () => {
+            $.ajax({
+                url: "{{ url('api/token') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: "{{ request()->data }}"
+                },
+                beforeSend: function() {
+                    $('#button-bayar').attr('disabled', true);
+                },
+                success: function(data) {
+                    console.log(data)
+                    showSnap(data.snap_token)
+                    $('#button-bayar').attr('disabled', false);
+                },
+                error: function(data) {
+                    console.log(data)
+                }
+            });
+        }
+
+        payButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            let snap_token = '{{ $snap_token }}';
+            if (snap_token != '') {
+                showSnap(snap_token)
+            } else {
+                callApi()
+            }
         });
     </script>
 @endpush

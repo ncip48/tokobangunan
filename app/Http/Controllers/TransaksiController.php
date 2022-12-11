@@ -105,7 +105,7 @@ class TransaksiController extends Controller
             'bg_color' => 'info',
             'text_color' => 'text-white'
         ]);
-        // Keranjang::whereIn('id', $request->keranjang)->delete();
+        Keranjang::whereIn('id', $request->keranjang)->delete();
         $data = $data->map(
             function ($item) use ($pembayaran) {
                 $kode = 'TBL-' . Random::generate(5, '0-9A-Z');

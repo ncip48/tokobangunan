@@ -3,15 +3,17 @@
     color: #ffffff;
   }
 
-  .ps-btn, button.ps-btn:disabled {
+  .ps-btn:disabled, button.ps-btn:disabled {
     background-color: lightgray;
     cursor: default;
   }
 
-    .ps-btn, button.ps-btn:disabled:hover {
+    .ps-btn:disabled, button.ps-btn:disabled:hover {
         background-color: lightgray;
         cursor: default;
     }
+
+
 
   .ps-btn:hover, button.ps-btn:hover {
     background-color: #c42000;
