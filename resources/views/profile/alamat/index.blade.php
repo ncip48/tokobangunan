@@ -1,5 +1,7 @@
 @extends('profile.layouts.main')
 
+@section('title', 'Alamat Saya')
+
 @section('content_user')
     <div class="ps-shopping-product">
         <div class="ps-form--account-setting">

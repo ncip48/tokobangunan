@@ -11,7 +11,7 @@
                         {{ session('success') }}
                     </div>
                 @endif
-                <div class="d-flex flex-row align-items-center mb-5">
+                <div class="d-flex flex-row align-items-center mb-4">
                     <h3 class="mb-0"> Notifikasi</h3>
                 </div>
             </div>

@@ -1,5 +1,7 @@
 @extends('profile.layouts.main')
 
+@section('title', 'Tambah Alamat')
+
 @section('content_user')
     <form class="ps-form--account-setting" action="{{ url('/profile/tambah-alamat') }}" method="POST" autocomplete="off">
         @csrf

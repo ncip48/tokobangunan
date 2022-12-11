@@ -1,5 +1,7 @@
 @extends('profile.layouts.main')
 
+@section('title', 'Edit Alamat')
+
 @section('content_user')
     <form class="ps-form--account-setting" action="{{ url('profile/alamat') }}" method="POST" autocomplete="off">
         @csrf

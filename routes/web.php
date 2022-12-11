@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::get('favorite', [\App\Http\Controllers\FavoriteController::class, 'index'])->name('favorite');
     Route::post('favorite', [App\Http\Controllers\FavoriteController::class, 'tambahFavorite']);
     Route::get('keranjang', [\App\Http\Controllers\KeranjangController::class, 'index'])->name('keranjang');
-    Route::get('pembayaran', [\App\Http\Controllers\TransaksiController::class, 'pembayaran'])->name('pembayaran');
+    Route::get('pembayaran', [\App\Http\Controllers\TransaksiController::class, 'pesan'])->name('pembayaran');
 });
 Route::prefix('profile')->middleware('auth')->group(function () {
     Route::get('/', [\App\Http\Controllers\ProfileController::class, 'index']);
