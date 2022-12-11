@@ -39,7 +39,7 @@ class TransaksiController extends Controller
             'deny' => '2',
             'cancel' => '2',
             'expire' => '3',
-            'refund' => '4',
+            'refund' => '2',
         ];
 
         $this->midtransParsing = [

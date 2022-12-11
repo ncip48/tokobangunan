@@ -34,6 +34,7 @@ Route::prefix('profile')->middleware('auth')->group(function () {
     Route::get('/', [\App\Http\Controllers\ProfileController::class, 'index']);
     Route::get('notifikasi', [\App\Http\Controllers\ProfileController::class, 'notifikasi']);
     Route::get('pesanan', [\App\Http\Controllers\ProfileController::class, 'pesanan']);
+    Route::get('pembayaran', [\App\Http\Controllers\ProfileController::class, 'pembayaran']);
     Route::get('alamat', [\App\Http\Controllers\AlamatController::class, 'index'])->name('alamat-user');
     Route::get('tambah-alamat', [\App\Http\Controllers\AlamatController::class, 'tambahAlamat']);
     Route::post('tambah-alamat', [\App\Http\Controllers\AlamatController::class, 'tambahAlamatAction']);
