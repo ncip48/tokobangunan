@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notifikasi;
+use App\Models\Pembayaran;
 use App\Models\TerakhirDilihat;
+use App\Models\Transaksi;
+use App\Models\TransaksiItem;
 use App\Models\Ulasan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
@@ -97,5 +101,40 @@ class ProfileController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(10);
         return view('profile.notifikasi', compact('notifikasis', 'auth'));
+    }
+
+    public function pesanan()
+    {
+        $auth = Auth::user();
+        $pesanans = Transaksi::where('id_user', $auth->id)
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        return view('profile.pesanan.index', compact('pesanans', 'auth'));
+    }
+
+    public function pesananDetail($id)
+    {
+        $auth = Auth::user();
+        $pesanan = Transaksi::where('id_user', $auth->id)
+            ->where('id', $id)
+            ->first();
+        $products = TransaksiItem::where('id_transaksi', $pesanan->id)
+            ->get();
+        return view('profile.pesanan.detail', compact('pesanan', 'auth', 'products'));
+    }
+
+    public function pembayaran()
+    {
+        $auth = Auth::user();
+        $pembayarans = Pembayaran::where('id_user', $auth->id)
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+        $pembayarans = $pembayarans->map(function ($pembayaran) {
+            $transaksi = Transaksi::where('id_pembayaran', $pembayaran->id)->get();
+            $pembayaran->total = $transaksi->sum('total');
+            $pembayaran->id_hash = Crypt::encryptString($pembayaran->id);
+            return $pembayaran;
+        });
+        return view('profile.pembayaran', compact('auth', 'pembayarans'));
     }
 }

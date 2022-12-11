@@ -54,10 +54,10 @@ class CallbackController extends Controller
             $this->sendNotif('user', $pembayaran->id_user, 'Pembayaran ' . $pembayaran->kode . ' sedang diproses', 'fa fa-money', 'primary', 'text-white');
         } else if ($transaction == 'settlement') {
             $this->updateTransaksi($notif->order_id, 1, $id_items, 1);
-            $this->sendNotif('user', $pembayaran->id_user, 'Pembayaran ' . $pembayaran->kode . ' telah berhasil', 'fa fa-money', 'success', 'text-white');
+            $this->sendNotif('user', $pembayaran->id_user, 'Pembayaran ' . $pembayaran->kode . ' telah dibayar', 'fa fa-money', 'success', 'text-white');
             $transaksi = Transaksi::where('id_pembayaran', $pembayaran->id)->get();
             foreach ($transaksi as $item) {
-                $this->sendNotif('user', $item->id_user, 'Pesanan dengan kode ' . $item->kode . ' telah berhasil', 'fa fa-shopping-bag', 'primary', 'text-white');
+                $this->sendNotif('user', $item->id_user, 'Pesanan dengan kode ' . $item->kode . ' telah dibayar', 'fa fa-shopping-bag', 'primary', 'text-white');
             }
         } else if ($transaction == 'cancel') {
             $this->updateTransaksi($notif->order_id, 2, $id_items, 5);
