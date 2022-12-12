@@ -111,27 +111,18 @@ class TokoController extends Controller
         $toko = Toko::where('id_user', $id)->first();
         $total_product = Produk::where('id_toko', $toko->id)->count();
         $total_pesanan = Transaksi::where('id_toko', $toko->id)
-            ->where('status', '!=', '0')
-            ->where('status', '!=', '5')
-            ->where('status', '!=', '6')
-            ->where('status', '!=', '7')
+            ->whereNotIn('status', [0, 5, 6, 7])
             ->count();
         $total_review = Ulasan::where('id_toko', $toko->id)->count();
         $total_penjualan_bulan = Transaksi::where('id_toko', $toko->id)
-            ->where('status', '!=', '0')
-            ->where('status', '!=', '5')
-            ->where('status', '!=', '6')
-            ->where('status', '!=', '7')
+            ->whereNotIn('status', [0, 5, 6, 7])
             ->whereMonth('created_at', Carbon::now()->month)
             ->sum('total');
 
         //for graphics pesanan
         $pesanan_grafik = Transaksi::select(DB::raw('COUNT(*) as total'), DB::raw('DAYNAME(created_at) as day_name'))
             ->where('id_toko', $toko->id)
-            ->where('status', '!=', '0')
-            ->where('status', '!=', '5')
-            ->where('status', '!=', '6')
-            ->where('status', '!=', '7')
+            ->whereNotIn('status', [0, 5, 6, 7])
             ->whereBetween('created_at', [Carbon::now()->startOfWeek(Carbon::SUNDAY), Carbon::now()->endOfWeek(Carbon::SATURDAY)])
             ->groupBy(DB::raw('Day(created_at)'))
             ->pluck('total', 'day_name');
@@ -152,28 +143,20 @@ class TokoController extends Controller
 
         $pembeli_laki = Transaksi::where('id_toko', $toko->id)
             ->join('users', 'transaksi.id_user', '=', 'users.id')
-            ->where('transaksi.status', '!=', '0')
-            ->where('transaksi.status', '!=', '5')
-            ->where('transaksi.status', '!=', '6')
-            ->where('transaksi.status', '!=', '7')
+            ->whereNotIn('transaksi.status', [0, 5, 6, 7])
             ->where('users.jenis_kelamin', '0')
             ->count();
         $pembeli_perempuan = Transaksi::where('id_toko', $toko->id)
             ->join('users', 'transaksi.id_user', '=', 'users.id')
-            ->where('transaksi.status', '!=', '0')
-            ->where('transaksi.status', '!=', '5')
-            ->where('transaksi.status', '!=', '6')
-            ->where('transaksi.status', '!=', '7')
+            ->whereNotIn('transaksi.status', [0, 5, 6, 7])
             ->where('users.jenis_kelamin', '1')
             ->count();
         $pembeli_lain = Transaksi::where('id_toko', $toko->id)
             ->join('users', 'transaksi.id_user', '=', 'users.id')
-            ->where('transaksi.status', '!=', '0')
-            ->where('transaksi.status', '!=', '5')
-            ->where('transaksi.status', '!=', '6')
-            ->where('transaksi.status', '!=', '7')
+            ->whereNotIn('transaksi.status', [0, 5, 6, 7])
             ->where('users.jenis_kelamin', '!=', '0')
             ->where('users.jenis_kelamin', '!=', '1')
+            ->orWhereNull('users.jenis_kelamin')
             ->count();
 
         $labels = $pesanan_grafik->keys();
@@ -485,6 +468,7 @@ class TokoController extends Controller
         $transaksi = Transaksi::find($request->id);
         $transaksi->status = 3;
         $transaksi->save();
+        //todo add resi
         return redirect()->back()->with('success', 'Pesanan berhasil dikirim');
     }
 }

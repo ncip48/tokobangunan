@@ -57,25 +57,28 @@
                                 </td>
                                 <td class="text-right">
                                     @if ($penjualan->status == 1)
-                                        <form action="{{ url('seller/penjualan/acc') }}" method="POST" id="form-acc">
+                                        <form action="{{ url('seller/penjualan/acc') }}" method="POST"
+                                            id="form-acc-{{ $penjualan->id }}">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $penjualan->id }}">
                                         </form>
-                                        <form action="{{ url('seller/penjualan/tolak') }}" method="POST" id="form-tolak">
+                                        <form action="{{ url('seller/penjualan/tolak') }}" method="POST"
+                                            id="form-tolak-{{ $penjualan->id }}">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $penjualan->id }}">
                                         </form>
-                                        <a onclick="event.preventDefault(); document.getElementById('form-acc').submit();"
+                                        <a onclick="event.preventDefault(); document.getElementById('form-acc-{{ $penjualan->id }}').submit();"
                                             class="btn btn-sm btn-primary btn-rounded">Setujui</a>
-                                        <a onclick="event.preventDefault(); document.getElementById('form-tolak').submit();"
+                                        <a onclick="event.preventDefault(); document.getElementById('form-tolak-{{ $penjualan->id }}').submit();"
                                             class="btn btn-sm btn-danger btn-rounded">Tolak</a>
                                     @endif
                                     @if ($penjualan->status == 2)
-                                        <form action="{{ url('seller/penjualan/kirim') }}" method="POST" id="form-kirim">
+                                        <form action="{{ url('seller/penjualan/kirim') }}" method="POST"
+                                            id="form-kirim-{{ $penjualan->id }}">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $penjualan->id }}">
                                         </form>
-                                        <a onclick="event.preventDefault(); document.getElementById('form-kirim').submit();"
+                                        <a onclick="event.preventDefault(); document.getElementById('form-kirim-{{ $penjualan->id }}').submit();"
                                             class="btn btn-sm btn-primary btn-rounded">Kirim Barang</a>
                                     @endif
                                     <a href="{{ url('profile/pesanan?detail=' . $penjualan->id) }}"

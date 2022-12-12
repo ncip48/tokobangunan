@@ -58,11 +58,11 @@
                                 <td class="text-right">
                                     @if ($pesanan->status == 3)
                                         <form action="{{ url('profile/pesanan/selesai') }}" method="POST"
-                                            id="pesanan-selesai">
+                                            id="pesanan-selesai-{{ $pesanan->id }}">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $pesanan->id }}">
                                         </form>
-                                        <a onclick="event.preventDefault(); document.getElementById('pesanan-selesai').submit();"
+                                        <a onclick="event.preventDefault(); document.getElementById('pesanan-selesai-{{ $pesanan->id }}').submit();"
                                             class="btn btn-sm btn-primary btn-rounded">Pesanan Diterima</a>
                                     @endif
                                     <a href="{{ url('profile/pesanan?detail=' . $pesanan->id) }}"
