@@ -122,7 +122,7 @@ class TokoController extends Controller
             ->where('status', '!=', '5')
             ->where('status', '!=', '6')
             ->where('status', '!=', '7')
-            ->whereMonth('created_at', date('m'))
+            ->whereMonth('created_at', Carbon::now()->month)
             ->sum('total');
 
         //for graphics pesanan
