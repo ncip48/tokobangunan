@@ -284,7 +284,7 @@
                                         </li>
                                         <li
                                             class="{{ Request::is('seller/rekening') || Request::is('seller/tambah-rekening') ? 'active' : '' }}">
-                                            <a href="{{ url('seller/rekening') }}"><i class="icon-cash-dollar"></i>
+                                            <a href="{{ url('seller/rekening') }}"><i class="icon-credit-card"></i>
                                                 Rekening
                                                 Saya</a>
                                         </li>
