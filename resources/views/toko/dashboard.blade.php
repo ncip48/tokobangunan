@@ -41,7 +41,21 @@
                 <canvas id="myChart" height="200px"></canvas>
             </div>
             <div class="col-4">
-                <canvas id="chartJK" height="100px"></canvas>
+                <div class="row">
+                    <div class="col-12">
+                        <div
+                            class="ps-block--dashboard alert-success d-flex justify-content-between align-items-center px-5 py-4 mb-3">
+                            <div class="ps-block__left"><i class="icon-bag-dollar" style="font-size: 4rem"></i></div>
+                            <div class="ps-block__right">
+                                <h3 class="text-right">@currency($total_penjualan_bulan)</h3>
+                                <p class="mb-0">Penjualan Bulan Ini</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <canvas id="chartJK" height="100px"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -121,7 +135,7 @@
         };
 
         const configJK = {
-            type: 'pie',
+            type: 'doughnut',
             data: dataJK,
         };
 

@@ -113,8 +113,16 @@ class TokoController extends Controller
             ->where('status', '!=', '0')
             ->where('status', '!=', '5')
             ->where('status', '!=', '6')
+            ->where('status', '!=', '7')
             ->count();
         $total_review = Ulasan::where('id_toko', $toko->id)->count();
+        $total_penjualan_bulan = Transaksi::where('id_toko', $toko->id)
+            ->where('status', '!=', '0')
+            ->where('status', '!=', '5')
+            ->where('status', '!=', '6')
+            ->where('status', '!=', '7')
+            ->whereMonth('created_at', date('m'))
+            ->sum('total');
 
         //for graphics pesanan
         $pesanan_grafik = Transaksi::select(DB::raw('COUNT(*) as total'), DB::raw('DAYNAME(created_at) as day_name'))
@@ -122,6 +130,7 @@ class TokoController extends Controller
             ->where('status', '!=', '0')
             ->where('status', '!=', '5')
             ->where('status', '!=', '6')
+            ->where('status', '!=', '7')
             ->groupBy(DB::raw('Day(created_at)'))
             ->pluck('total', 'day_name');
 
@@ -144,6 +153,7 @@ class TokoController extends Controller
             ->where('transaksi.status', '!=', '0')
             ->where('transaksi.status', '!=', '5')
             ->where('transaksi.status', '!=', '6')
+            ->where('transaksi.status', '!=', '7')
             ->where('users.jenis_kelamin', '0')
             ->count();
         $pembeli_perempuan = Transaksi::where('id_toko', $toko->id)
@@ -151,6 +161,7 @@ class TokoController extends Controller
             ->where('transaksi.status', '!=', '0')
             ->where('transaksi.status', '!=', '5')
             ->where('transaksi.status', '!=', '6')
+            ->where('transaksi.status', '!=', '7')
             ->where('users.jenis_kelamin', '1')
             ->count();
         $pembeli_lain = Transaksi::where('id_toko', $toko->id)
@@ -158,6 +169,7 @@ class TokoController extends Controller
             ->where('transaksi.status', '!=', '0')
             ->where('transaksi.status', '!=', '5')
             ->where('transaksi.status', '!=', '6')
+            ->where('transaksi.status', '!=', '7')
             ->where('users.jenis_kelamin', '!=', '0')
             ->where('users.jenis_kelamin', '!=', '1')
             ->count();
@@ -168,7 +180,7 @@ class TokoController extends Controller
         });
         $data = $pesanan_grafik->values();
         $grafik_jk = [$pembeli_laki, $pembeli_perempuan, $pembeli_lain];
-        return view('toko.dashboard', compact('toko', 'total_product', 'total_pesanan', 'total_review', 'labels', 'data', 'grafik_jk'));
+        return view('toko.dashboard', compact('toko', 'total_product', 'total_pesanan', 'total_review', 'labels', 'data', 'grafik_jk', 'total_penjualan_bulan'));
     }
 
     public function produk()
