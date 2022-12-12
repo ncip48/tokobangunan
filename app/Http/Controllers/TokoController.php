@@ -154,8 +154,7 @@ class TokoController extends Controller
         $pembeli_lain = Transaksi::where('id_toko', $toko->id)
             ->join('users', 'transaksi.id_user', '=', 'users.id')
             ->whereNotIn('transaksi.status', [0, 5, 6, 7])
-            ->where('users.jenis_kelamin', '!=', '0')
-            ->where('users.jenis_kelamin', '!=', '1')
+            ->whereNotIn('users.jenis_kelamin', [0, 1])
             ->orWhereNull('users.jenis_kelamin')
             ->count();
 
