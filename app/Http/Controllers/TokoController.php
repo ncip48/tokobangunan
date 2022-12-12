@@ -6,10 +6,13 @@ use App\Models\Kategori;
 use App\Models\Merk;
 use App\Models\Produk;
 use App\Models\Toko;
+use App\Models\Transaksi;
 use App\Models\Ulasan;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -50,14 +53,121 @@ class TokoController extends Controller
         }
     }
 
+    public function mappingDayIndo($day)
+    {
+        $day = strtolower($day);
+        switch ($day) {
+            case 'monday':
+                return 'Senin';
+                break;
+            case 'tuesday':
+                return 'Selasa';
+                break;
+            case 'wednesday':
+                return 'Rabu';
+                break;
+            case 'thursday':
+                return 'Kamis';
+                break;
+            case 'friday':
+                return 'Jumat';
+                break;
+            case 'saturday':
+                return 'Sabtu';
+                break;
+            case 'sunday':
+                return 'Minggu';
+                break;
+            default:
+                return 'Senin';
+                break;
+        }
+    }
+
+    public function changeKeyToDay($key)
+    {
+        if ($key == 0) {
+            return 'Sunday';
+        } else if ($key == 1) {
+            return 'Monday';
+        } else if ($key == 2) {
+            return 'Tuesday';
+        } else if ($key == 3) {
+            return 'Wednesday';
+        } else if ($key == 4) {
+            return 'Thursday';
+        } else if ($key == 5) {
+            return 'Friday';
+        } else if ($key == 6) {
+            return 'Saturday';
+        }
+    }
+
     public function dashboardToko()
     {
         $id = Auth::user()->id;
         $toko = Toko::where('id_user', $id)->first();
         $total_product = Produk::where('id_toko', $toko->id)->count();
-        $total_pesanan = 0;
+        $total_pesanan = Transaksi::where('id_toko', $toko->id)
+            ->where('status', '!=', '0')
+            ->where('status', '!=', '5')
+            ->where('status', '!=', '6')
+            ->count();
         $total_review = Ulasan::where('id_toko', $toko->id)->count();
-        return view('toko.dashboard', compact('toko', 'total_product', 'total_pesanan', 'total_review'));
+
+        //for graphics pesanan
+        $pesanan_grafik = Transaksi::select(DB::raw('COUNT(*) as total'), DB::raw('DAYNAME(created_at) as day_name'))
+            ->where('id_toko', $toko->id)
+            ->where('status', '!=', '0')
+            ->where('status', '!=', '5')
+            ->where('status', '!=', '6')
+            ->groupBy(DB::raw('Day(created_at)'))
+            ->pluck('total', 'day_name');
+
+        $day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $day = collect($day);
+        $pesanan_grafik = $day->map(function ($item) use ($pesanan_grafik) {
+            if ($pesanan_grafik->has($item)) {
+                return $pesanan_grafik[$item];
+            } else {
+                return 0;
+            }
+        });
+
+        $pesanan_grafik = $pesanan_grafik->keyBy(function ($item, $key) {
+            return $this->changeKeyToDay($key);
+        });
+
+        $pembeli_laki = Transaksi::where('id_toko', $toko->id)
+            ->join('users', 'transaksi.id_user', '=', 'users.id')
+            ->where('transaksi.status', '!=', '0')
+            ->where('transaksi.status', '!=', '5')
+            ->where('transaksi.status', '!=', '6')
+            ->where('users.jenis_kelamin', '0')
+            ->count();
+        $pembeli_perempuan = Transaksi::where('id_toko', $toko->id)
+            ->join('users', 'transaksi.id_user', '=', 'users.id')
+            ->where('transaksi.status', '!=', '0')
+            ->where('transaksi.status', '!=', '5')
+            ->where('transaksi.status', '!=', '6')
+            ->where('users.jenis_kelamin', '1')
+            ->count();
+        $pembeli_lain = Transaksi::where('id_toko', $toko->id)
+            ->join('users', 'transaksi.id_user', '=', 'users.id')
+            ->where('transaksi.status', '!=', '0')
+            ->where('transaksi.status', '!=', '5')
+            ->where('transaksi.status', '!=', '6')
+            ->where('users.jenis_kelamin', '!=', '0')
+            ->where('users.jenis_kelamin', '!=', '1')
+            ->count();
+
+        $labels = $pesanan_grafik->keys();
+        $labels = $labels->map(function ($label) {
+            return $this->mappingDayIndo($label);
+        });
+        $data = $pesanan_grafik->values();
+        $grafik_jk = [$pembeli_laki, $pembeli_perempuan, $pembeli_lain];
+        return view('toko.dashboard', compact('toko', 'total_product', 'total_pesanan', 'total_review', 'labels', 'data', 'grafik_jk'));
     }
 
     public function produk()

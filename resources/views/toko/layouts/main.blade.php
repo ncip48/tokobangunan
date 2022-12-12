@@ -278,7 +278,10 @@
                                             class="{{ Request::is('seller/produk') || Request::is('seller/tambah-produk') ? 'active' : '' }}">
                                             <a href="{{ url('seller/produk') }}"><i class="icon-bag"></i> Produk</a>
                                         </li>
-                                        <li><a href="#"><i class="icon-cashier"></i> Penjualan Saya</a></li>
+                                        <li class="{{ Request::is('seller/penjualan') ? 'active' : '' }}"><a
+                                                href="{{ url('seller/penjualan') }}">
+                                                <i class="icon-cashier"></i> Penjualan Saya</a>
+                                        </li>
                                         <li
                                             class="{{ Request::is('profile/alamat') || Request::is('profile/tambah-alamat') ? 'active' : '' }}">
                                             <a href="{{ url('profile/alamat') }}"><i class="icon-cash-dollar"></i>
