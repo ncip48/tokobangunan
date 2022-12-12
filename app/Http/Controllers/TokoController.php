@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kategori;
 use App\Models\Merk;
 use App\Models\Produk;
+use App\Models\Saldo;
 use App\Models\Toko;
 use App\Models\Transaksi;
 use App\Models\Ulasan;
@@ -433,5 +434,43 @@ class TokoController extends Controller
         $toko->id_user = $id;
         $toko->save();
         return redirect()->back()->with('success', 'Toko berhasil diubah');
+    }
+
+    public function penjualan()
+    {
+        $id = Auth::user()->id;
+        $toko = Toko::where('id_user', $id)->first();
+        $penjualans = Transaksi::where('id_toko', $toko->id)->paginate(10);
+        return view('toko.penjualan.index', compact('penjualans'));
+    }
+
+    public function accPenjualan(Request $request)
+    {
+        $transaksi = Transaksi::find($request->id);
+        $transaksi->status = 2;
+        $transaksi->save();
+        Saldo::create([
+            'id_toko' => $transaksi->id_toko,
+            'id_transaksi' => $transaksi->id,
+            'nominal' => $transaksi->total,
+            'status' => 0
+        ]);
+        return redirect()->back()->with('success', 'Transaksi berhasil disetujui');
+    }
+
+    public function tolakPenjualan(Request $request)
+    {
+        $transaksi = Transaksi::find($request->id);
+        $transaksi->status = 7;
+        $transaksi->save();
+        return redirect()->back()->with('success', 'Transaksi berhasil ditolak');
+    }
+
+    public function kirimPenjualan(Request $request)
+    {
+        $transaksi = Transaksi::find($request->id);
+        $transaksi->status = 3;
+        $transaksi->save();
+        return redirect()->back()->with('success', 'Pesanan berhasil dikirim');
     }
 }

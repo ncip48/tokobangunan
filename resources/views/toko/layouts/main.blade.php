@@ -283,9 +283,14 @@
                                                 <i class="icon-cashier"></i> Penjualan Saya</a>
                                         </li>
                                         <li
-                                            class="{{ Request::is('profile/alamat') || Request::is('profile/tambah-alamat') ? 'active' : '' }}">
-                                            <a href="{{ url('profile/alamat') }}"><i class="icon-cash-dollar"></i>
+                                            class="{{ Request::is('seller/rekening') || Request::is('seller/tambah-rekening') ? 'active' : '' }}">
+                                            <a href="{{ url('seller/rekening') }}"><i class="icon-cash-dollar"></i>
                                                 Rekening
+                                                Saya</a>
+                                        </li>
+                                        <li class="{{ Request::is('seller/saldo') ? 'active' : '' }}">
+                                            <a href="{{ url('seller/saldo') }}"><i class="icon-bag-dollar"></i>
+                                                Saldo
                                                 Saya</a>
                                         </li>
                                         <li class="{{ Request::is('seller/edit-toko') ? 'active' : '' }}">
