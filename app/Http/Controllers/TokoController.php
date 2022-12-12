@@ -9,6 +9,7 @@ use App\Models\Saldo;
 use App\Models\Toko;
 use App\Models\Transaksi;
 use App\Models\Ulasan;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -131,6 +132,7 @@ class TokoController extends Controller
             ->where('status', '!=', '5')
             ->where('status', '!=', '6')
             ->where('status', '!=', '7')
+            ->whereBetween('created_at', [Carbon::now()->startOfWeek(Carbon::SUNDAY), Carbon::now()->endOfWeek(Carbon::SATURDAY)])
             ->groupBy(DB::raw('Day(created_at)'))
             ->pluck('total', 'day_name');
 
