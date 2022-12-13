@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
 use App\Models\Kategori;
 use App\Models\Merk;
 use App\Models\Produk;
+use App\Models\Rekening;
+use App\Models\Saldo;
 use App\Models\Toko;
+use App\Models\Transaksi;
 use App\Models\Ulasan;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -50,14 +57,116 @@ class TokoController extends Controller
         }
     }
 
+    public function mappingDayIndo($day)
+    {
+        $day = strtolower($day);
+        switch ($day) {
+            case 'monday':
+                return 'Senin';
+                break;
+            case 'tuesday':
+                return 'Selasa';
+                break;
+            case 'wednesday':
+                return 'Rabu';
+                break;
+            case 'thursday':
+                return 'Kamis';
+                break;
+            case 'friday':
+                return 'Jumat';
+                break;
+            case 'saturday':
+                return 'Sabtu';
+                break;
+            case 'sunday':
+                return 'Minggu';
+                break;
+            default:
+                return 'Senin';
+                break;
+        }
+    }
+
+    public function changeKeyToDay($key)
+    {
+        if ($key == 0) {
+            return 'Sunday';
+        } else if ($key == 1) {
+            return 'Monday';
+        } else if ($key == 2) {
+            return 'Tuesday';
+        } else if ($key == 3) {
+            return 'Wednesday';
+        } else if ($key == 4) {
+            return 'Thursday';
+        } else if ($key == 5) {
+            return 'Friday';
+        } else if ($key == 6) {
+            return 'Saturday';
+        }
+    }
+
     public function dashboardToko()
     {
         $id = Auth::user()->id;
         $toko = Toko::where('id_user', $id)->first();
         $total_product = Produk::where('id_toko', $toko->id)->count();
-        $total_pesanan = 0;
+        $total_pesanan = Transaksi::where('id_toko', $toko->id)
+            ->whereNotIn('status', [0, 5, 6, 7])
+            ->count();
         $total_review = Ulasan::where('id_toko', $toko->id)->count();
-        return view('toko.dashboard', compact('toko', 'total_product', 'total_pesanan', 'total_review'));
+        $total_penjualan_bulan = Transaksi::where('id_toko', $toko->id)
+            ->whereNotIn('status', [0, 5, 6, 7])
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->sum('total');
+
+        //for graphics pesanan
+        $pesanan_grafik = Transaksi::select(DB::raw('COUNT(*) as total'), DB::raw('DAYNAME(created_at) as day_name'))
+            ->where('id_toko', $toko->id)
+            ->whereNotIn('status', [0, 5, 6, 7])
+            ->whereBetween('created_at', [Carbon::now()->startOfWeek(Carbon::SUNDAY), Carbon::now()->endOfWeek(Carbon::SATURDAY)])
+            ->groupBy(DB::raw('Day(created_at)'))
+            ->pluck('total', 'day_name');
+
+        $day = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $day = collect($day);
+        $pesanan_grafik = $day->map(function ($item) use ($pesanan_grafik) {
+            if ($pesanan_grafik->has($item)) {
+                return $pesanan_grafik[$item];
+            } else {
+                return 0;
+            }
+        });
+
+        $pesanan_grafik = $pesanan_grafik->keyBy(function ($item, $key) {
+            return $this->changeKeyToDay($key);
+        });
+
+        $pembeli_laki = Transaksi::where('id_toko', $toko->id)
+            ->join('users', 'transaksi.id_user', '=', 'users.id')
+            ->whereNotIn('transaksi.status', [0, 5, 6, 7])
+            ->where('users.jenis_kelamin', '0')
+            ->count();
+        $pembeli_perempuan = Transaksi::where('id_toko', $toko->id)
+            ->join('users', 'transaksi.id_user', '=', 'users.id')
+            ->whereNotIn('transaksi.status', [0, 5, 6, 7])
+            ->where('users.jenis_kelamin', '1')
+            ->count();
+        $pembeli_lain = Transaksi::where('id_toko', $toko->id)
+            ->join('users', 'transaksi.id_user', '=', 'users.id')
+            ->whereNotIn('transaksi.status', [0, 5, 6, 7])
+            ->whereNotIn('users.jenis_kelamin', [0, 1])
+            ->orWhereNull('users.jenis_kelamin')
+            ->count();
+
+        $labels = $pesanan_grafik->keys();
+        $labels = $labels->map(function ($label) {
+            return $this->mappingDayIndo($label);
+        });
+        $data = $pesanan_grafik->values();
+        $grafik_jk = [$pembeli_laki, $pembeli_perempuan, $pembeli_lain];
+        return view('toko.dashboard', compact('toko', 'total_product', 'total_pesanan', 'total_review', 'labels', 'data', 'grafik_jk', 'total_penjualan_bulan'));
     }
 
     public function produk()
@@ -323,5 +432,150 @@ class TokoController extends Controller
         $toko->id_user = $id;
         $toko->save();
         return redirect()->back()->with('success', 'Toko berhasil diubah');
+    }
+
+    public function penjualan()
+    {
+        $id = Auth::user()->id;
+        $toko = Toko::where('id_user', $id)->first();
+        $penjualans = Transaksi::where('id_toko', $toko->id)->paginate(10);
+        return view('toko.penjualan.index', compact('penjualans'));
+    }
+
+    public function accPenjualan(Request $request)
+    {
+        $transaksi = Transaksi::find($request->id);
+        $transaksi->status = 2;
+        $transaksi->save();
+        Saldo::create([
+            'id_toko' => $transaksi->id_toko,
+            'id_transaksi' => $transaksi->id,
+            'nominal' => $transaksi->total,
+            'status' => 0
+        ]);
+        return redirect()->back()->with('success', 'Transaksi berhasil disetujui');
+    }
+
+    public function tolakPenjualan(Request $request)
+    {
+        $transaksi = Transaksi::find($request->id);
+        $transaksi->status = 7;
+        $transaksi->save();
+        return redirect()->back()->with('success', 'Transaksi berhasil ditolak');
+    }
+
+    public function kirimPenjualan(Request $request)
+    {
+        $transaksi = Transaksi::find($request->id);
+        $transaksi->status = 3;
+        $transaksi->save();
+        //todo add resi
+        return redirect()->back()->with('success', 'Pesanan berhasil dikirim');
+    }
+
+    public function saldo()
+    {
+        $id = Auth::user()->id;
+        $toko = Toko::where('id_user', $id)->first();
+        $saldos = Saldo::select('saldo.*', 'transaksi.kode')
+            ->leftJoin('transaksi', 'transaksi.id', '=', 'saldo.id_transaksi')
+            ->where('saldo.id_toko', $toko->id)
+            ->orderBy('saldo.id', 'desc')
+            ->paginate(5);
+
+        $tertahan = Saldo::where('id_toko', $toko->id)->where('status', 0)->sum('nominal');
+        $tersedia = Saldo::where('id_toko', $toko->id)->where('status', 1)->where('is_cair', 0)->sum('nominal');
+        $dicairkan = Saldo::where('id_toko', $toko->id)->where('status', 99)->sum('nominal');
+
+        $saldo = new Collection();
+        $saldo->tertahan = $tertahan;
+        $saldo->tersedia = $tersedia;
+        $saldo->dicairkan = $dicairkan;
+        return view('toko.saldo', compact('saldos', 'saldo'));
+    }
+
+    public function rekening()
+    {
+        $id = Auth::user()->id;
+        $toko = Toko::where('id_user', $id)->first();
+        $rekenings = Rekening::select('rekening.*', 'bank.nama', 'bank.logo')
+            ->join('bank', 'bank.id', 'rekening.id_bank')
+            ->where('id_toko', $toko->id)
+            ->paginate(8);
+        return view('toko.rekening.index', compact('rekenings'));
+    }
+
+    public function tambahRekening()
+    {
+        $banks = Bank::all();
+        return view('toko.rekening.tambah', compact('banks'));
+    }
+
+    public function tambahRekeningAction(Request $request)
+    {
+        $id = Auth::user()->id;
+        $toko = Toko::where('id_user', $id)->first();
+        $request->validate(
+            [
+                'atas_nama' => 'required',
+                'no_rekening' => 'required',
+                'id_bank' => 'required',
+                'cabang' => 'required',
+            ],
+            [
+                'atas_nama.required' => 'Nama pemilik rekening harus diisi',
+                'no_rekening.required' => 'Nomor rekening harus diisi',
+                'id_bank.required' => 'Bank harus diisi',
+                'cabang.required' => 'Cabang harus diisi',
+            ]
+        );
+        Rekening::create([
+            'id_toko' => $toko->id,
+            'id_bank' => $request->id_bank,
+            'atas_nama' => $request->atas_nama,
+            'no_rekening' => $request->no_rekening,
+            'cabang' => $request->cabang,
+        ]);
+        return redirect()->route('rekening-toko')->with('success', 'Rekening berhasil ditambahkan');
+    }
+
+    public function editRekening($id)
+    {
+        $id = Crypt::decrypt($id);
+        $rekening = Rekening::find($id);
+        $banks = Bank::all();
+        return view('toko.rekening.edit', compact('rekening', 'banks'));
+    }
+
+    public function editRekeningAction(Request $request)
+    {
+        $request->validate(
+            [
+                'atas_nama' => 'required',
+                'no_rekening' => 'required',
+                'id_bank' => 'required',
+                'cabang' => 'required',
+            ],
+            [
+                'atas_nama.required' => 'Nama pemilik rekening harus diisi',
+                'no_rekening.required' => 'Nomor rekening harus diisi',
+                'id_bank.required' => 'Bank harus diisi',
+                'cabang.required' => 'Cabang harus diisi',
+            ]
+        );
+        $rekening = Rekening::find($request->id);
+        $rekening->id_bank = $request->id_bank;
+        $rekening->atas_nama = $request->atas_nama;
+        $rekening->no_rekening = $request->no_rekening;
+        $rekening->cabang = $request->cabang;
+        $rekening->save();
+        return redirect()->route('rekening-toko')->with('success', 'Rekening berhasil diubah');
+    }
+
+    public function hapusRekening($id)
+    {
+        $rekening = Rekening::find($id);
+        $rekening->delete();
+        return redirect()->back()->with('success', 'Rekening berhasil dihapus');
     }
 }

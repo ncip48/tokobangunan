@@ -44,6 +44,7 @@ Route::prefix('profile')->middleware('auth')->group(function () {
     Route::get('terakhir-dilihat', [\App\Http\Controllers\ProfileController::class, 'terakhirDilihat']);
     Route::patch('user', [\App\Http\Controllers\ProfileController::class, 'updateUser']);
     Route::patch('photo', [\App\Http\Controllers\ProfileController::class, 'updatePhotoProfile']);
+    Route::post('pesanan/selesai', [\App\Http\Controllers\ProfileController::class, 'selesaiPesanan']);
 });
 
 Route::prefix('seller')->middleware('auth')->group(function () {
@@ -60,8 +61,16 @@ Route::prefix('seller')->middleware('auth')->group(function () {
         Route::get('produk/{id}', [\App\Http\Controllers\TokoController::class, 'editProduk']);
         Route::patch('produk', [\App\Http\Controllers\TokoController::class, 'editProdukAction']);
         Route::delete('produk/{id}', [\App\Http\Controllers\TokoController::class, 'hapusProduk']);
-        Route::get('pesanan', [\App\Http\Controllers\TokoController::class, 'pesanan']);
-        Route::get('pesanan/{id}', [\App\Http\Controllers\TokoController::class, 'detailPesanan']);
-        Route::patch('pesanan/{id}', [\App\Http\Controllers\TokoController::class, 'updatePesanan']);
+        Route::get('penjualan', [\App\Http\Controllers\TokoController::class, 'penjualan'])->name('penjualan-toko');
+        Route::post('penjualan/acc', [\App\Http\Controllers\TokoController::class, 'accPenjualan']);
+        Route::post('penjualan/tolak', [\App\Http\Controllers\TokoController::class, 'tolakPenjualan']);
+        Route::post('penjualan/kirim', [\App\Http\Controllers\TokoController::class, 'kirimPenjualan']);
+        Route::get('saldo', [\App\Http\Controllers\TokoController::class, 'saldo'])->name('saldo-toko');
+        Route::get('rekening', [\App\Http\Controllers\TokoController::class, 'rekening'])->name('rekening-toko');
+        Route::get('tambah-rekening', [\App\Http\Controllers\TokoController::class, 'tambahRekening']);
+        Route::post('tambah-rekening', [\App\Http\Controllers\TokoController::class, 'tambahRekeningAction']);
+        Route::get('rekening/{id}', [\App\Http\Controllers\TokoController::class, 'editRekening']);
+        Route::patch('rekening', [\App\Http\Controllers\TokoController::class, 'editRekeningAction']);
+        Route::delete('rekening/{id}', [\App\Http\Controllers\TokoController::class, 'hapusRekening']);
     });
 });
