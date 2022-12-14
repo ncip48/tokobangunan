@@ -773,8 +773,176 @@ class TokoTest extends TestCase
         ]);
         $request->assertStatus(302);
         $request->assertRedirect('seller/penjualan');
-        $$request = $this->get('seller/penjualan');
+        $request = $this->get('seller/penjualan');
         $request->assertStatus(200);
         $request->assertSee('Pesanan Diproses Toko');
+    }
+
+    public function test_toko_dapat_menolak_penjualan()
+    {
+        $user = User::create([
+            'email' => 'test@gmail.com',
+            'name' => 'test',
+            'password' => '12345678',
+        ]);
+        $toko = Toko::create([
+            'id_user' => $user->id,
+            'nama_toko' => 'Berkah Jaya',
+            'deskripsi_toko' => 'Menjual semen',
+            'gambar_toko' => 'berkah.jpg',
+            'alamat_toko' => 'Jl Ngasem',
+            'latitude' => 0,
+            'longitude' => 0,
+            'prefix' => Random::generate(5),
+            'id_provinsi' => 1,
+            'nama_provinsi' => 'Jawa Timur',
+            'id_kota' => '1',
+            'nama_kota' => 'Malang',
+            'id_kecamatan' => 1,
+            'nama_kecamatan' => 'Lowokwaru'
+        ]);
+        $alamat = Alamat::create([
+            'id_user' => $user->id,
+            'nama_penerima' => 'Dwi Elok',
+            'no_hp' => '08123456789',
+            'alamat' => 'Jl Raya Kedungsari',
+            'latitude' => 0,
+            'longitude' => 0,
+            'id_provinsi' => 11,
+            'nama_provinsi' => 'Jawa Timur',
+            'id_kota' => 251,
+            'nama_kota' => 'Kabupaten Magetan',
+            'id_kecamatan' => 3538,
+            'nama_kecamatan' => 'Karas',
+            'kode_pos' => '63213',
+            'is_main' => 0,
+        ]);
+        $pembayaran = Pembayaran::create([
+            'kode' => 'MTR-' . Random::generate(5),
+            'id_user' => $user->id,
+            'status' => 0,
+        ]);
+        $file = UploadedFile::fake()->image('file.png', 600, 600);
+        $produk = Produk::create([
+            'id_toko' => $toko->id,
+            'id_user' => $user->id,
+            'id_kategori' => 1,
+            'id_merk' => 1,
+            'nama_produk' => 'Semen Sak',
+            'deskripsi' => 'Menjual berbagai semen',
+            'gambar_produk' => $file,
+            'harga_produk' => 50000,
+            'stok_raw' => 10,
+            'satuan_produk' => 'Kg',
+            'prefix' => Random::generate(5) . '-semen-sak'
+        ]);
+        $transaksi = Transaksi::create([
+            'id_pembayaran' => $pembayaran->id,
+            'kode' => 'TBL-' . Random::generate(5),
+            'id_user' => $user->id,
+            'id_toko' => $toko->id,
+            'id_alamat' => $alamat->id,
+            'ongkir' => 8000,
+            'total_harga' => 50000,
+            'total' => 58000,
+            'status' => 1,
+        ]);
+        $this->actingAs($user);
+        $request = $this->get('seller/penjualan');
+        $request->assertStatus(200);
+        $request->assertSee('Pesanan Dibayar');
+        $request = $this->post('seller/penjualan/tolak', [
+            'id' => $transaksi->id,
+            'status' => 7
+        ]);
+        $request->assertStatus(302);
+        $request->assertRedirect('seller/penjualan');
+        $request = $this->get('seller/penjualan');
+        $request->assertStatus(200);
+        $request->assertSee('Pesanan Ditolak Toko');
+    }
+
+    public function test_toko_dapat_mengubah_status_penjualan_menjadi_dikirim()
+    {
+        $user = User::create([
+            'email' => 'test@gmail.com',
+            'name' => 'test',
+            'password' => '12345678',
+        ]);
+        $toko = Toko::create([
+            'id_user' => $user->id,
+            'nama_toko' => 'Berkah Jaya',
+            'deskripsi_toko' => 'Menjual semen',
+            'gambar_toko' => 'berkah.jpg',
+            'alamat_toko' => 'Jl Ngasem',
+            'latitude' => 0,
+            'longitude' => 0,
+            'prefix' => Random::generate(5),
+            'id_provinsi' => 1,
+            'nama_provinsi' => 'Jawa Timur',
+            'id_kota' => '1',
+            'nama_kota' => 'Malang',
+            'id_kecamatan' => 1,
+            'nama_kecamatan' => 'Lowokwaru'
+        ]);
+        $alamat = Alamat::create([
+            'id_user' => $user->id,
+            'nama_penerima' => 'Dwi Elok',
+            'no_hp' => '08123456789',
+            'alamat' => 'Jl Raya Kedungsari',
+            'latitude' => 0,
+            'longitude' => 0,
+            'id_provinsi' => 11,
+            'nama_provinsi' => 'Jawa Timur',
+            'id_kota' => 251,
+            'nama_kota' => 'Kabupaten Magetan',
+            'id_kecamatan' => 3538,
+            'nama_kecamatan' => 'Karas',
+            'kode_pos' => '63213',
+            'is_main' => 0,
+        ]);
+        $pembayaran = Pembayaran::create([
+            'kode' => 'MTR-' . Random::generate(5),
+            'id_user' => $user->id,
+            'status' => 0,
+        ]);
+        $file = UploadedFile::fake()->image('file.png', 600, 600);
+        $produk = Produk::create([
+            'id_toko' => $toko->id,
+            'id_user' => $user->id,
+            'id_kategori' => 1,
+            'id_merk' => 1,
+            'nama_produk' => 'Semen Sak',
+            'deskripsi' => 'Menjual berbagai semen',
+            'gambar_produk' => $file,
+            'harga_produk' => 50000,
+            'stok_raw' => 10,
+            'satuan_produk' => 'Kg',
+            'prefix' => Random::generate(5) . '-semen-sak'
+        ]);
+        $transaksi = Transaksi::create([
+            'id_pembayaran' => $pembayaran->id,
+            'kode' => 'TBL-' . Random::generate(5),
+            'id_user' => $user->id,
+            'id_toko' => $toko->id,
+            'id_alamat' => $alamat->id,
+            'ongkir' => 8000,
+            'total_harga' => 50000,
+            'total' => 58000,
+            'status' => 1,
+        ]);
+        $this->actingAs($user);
+        $request = $this->get('seller/penjualan');
+        $request->assertStatus(200);
+        $request->assertSee('Pesanan Dibayar');
+        $request = $this->post('seller/penjualan/kirim', [
+            'id' => $transaksi->id,
+            'status' => 3
+        ]);
+        $request->assertStatus(302);
+        $request->assertRedirect('seller/penjualan');
+        $request = $this->get('seller/penjualan');
+        $request->assertStatus(200);
+        $request->assertSee('Pesanan Dikirim');
     }
 }
