@@ -944,5 +944,6 @@ class TokoTest extends TestCase
         $request = $this->get('seller/penjualan');
         $request->assertStatus(200);
         $request->assertSee('Pesanan Dikirim');
+        $request->assertSee($transaksi->kode);
     }
 }
