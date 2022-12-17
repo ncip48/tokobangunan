@@ -10,7 +10,7 @@
 @endphp
 
 @php
-    $toko = \App\Models\Toko::where('id_user', Auth::user()->id)->first();
+    $user = \App\Models\User::where('id', Auth::user()->id)->first();
 @endphp
 
 @auth
@@ -40,7 +40,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Mart Bangunan Seller - @yield('title')</title>
+    <title>Admin - @yield('title')</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -69,7 +69,7 @@
                 <div class="header__content-left" style="max-width:1870px">
                     <a class="ps-logo d-flex align-items-center" href="{{ url('/') }}"><img
                             src="{{ asset('img/logo.png') }}" alt="" style="height: 60px">
-                        <h3 class="text-white ml-2 mb-0"> | Penjual</h3>
+                        <h3 class="text-white ml-2 mb-0"> | Administrator</h3>
                     </a>
                 </div>
                 <div class="header__content-right">
@@ -239,70 +239,60 @@
                     <div class="ps-section__left">
                         <aside class="ps-widget--account-dashboard">
                             <div class="ps-widget__header">
-                                @if ($toko)
-                                    <img src="{{ $toko->gambar_toko ? asset('img/toko/' . $toko->gambar_toko) : 'http://nouthemes.net/html/martfury/img/users/3.jpg' }}"
-                                        alt=""
-                                        style="height:60px;width:60px;object-fit:cover;flex-basis:71px;max-width:70px">
-                                    <figure>
-                                        <figcaption>{{ $toko->nama_toko }}</figcaption>
-                                        <p><a href="#">{{ $toko->nama_kota }}</a></p>
-                                    </figure>
-                                @else
-                                    <figure>
-                                        <figcaption>Halo, Selamat datang,</figcaption>
-                                        <p><a href="#">Silahkan lengkapi form di samping untuk mendaftar sebagai
-                                                toko/seller/penjual</a></p>
-                                    </figure>
-                                @endif
+                                <img src="{{ $user->image ? asset('img/toko/' . $user->image) : 'http://nouthemes.net/html/martfury/img/users/3.jpg' }}"
+                                    alt=""
+                                    style="height:60px;width:60px;object-fit:cover;flex-basis:71px;max-width:70px">
+                                <figure>
+                                    <figcaption>{{ $user->name }}</figcaption>
+                                    <p><a href="#">{{ $user->email }}</a></p>
+                                </figure>
                             </div>
                             <div class="ps-widget__content">
                                 <ul>
-
-                                    @if (!$toko)
-                                        <li class="{{ Request::is('seller/buat-toko') ? 'active' : '' }}">
-                                            <a target="blank" href="{{ url('seller/buat-toko') }}"><i
-                                                    class="icon-store"></i>
-                                                Buat Toko
-                                            </a>
-                                        </li>
-                                    @else
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                            style="display: none;">
-                                            @csrf
-                                        </form>
-                                        <li class="{{ Request::is('seller/dashboard') ? 'active' : '' }}"><a
-                                                href="{{ url('seller/dashboard') }}"><i class="icon-speed-fast"></i>
-                                                Dashboard</a>
-                                        </li>
-                                        <li
-                                            class="{{ Request::is('seller/produk') || Request::is('seller/tambah-produk') ? 'active' : '' }}">
-                                            <a href="{{ url('seller/produk') }}"><i class="icon-bag"></i> Produk</a>
-                                        </li>
-                                        <li class="{{ Request::is('seller/penjualan') ? 'active' : '' }}"><a
-                                                href="{{ url('seller/penjualan') }}">
-                                                <i class="icon-cashier"></i> Penjualan Saya</a>
-                                        </li>
-                                        <li
-                                            class="{{ Request::is('seller/rekening') || Request::is('seller/tambah-rekening') ? 'active' : '' }}">
-                                            <a href="{{ url('seller/rekening') }}"><i class="icon-credit-card"></i>
-                                                Rekening
-                                                Saya</a>
-                                        </li>
-                                        <li class="{{ Request::is('seller/saldo') ? 'active' : '' }}">
-                                            <a href="{{ url('seller/saldo') }}"><i class="icon-bag-dollar"></i>
-                                                Saldo
-                                                Saya</a>
-                                        </li>
-                                        <li class="{{ Request::is('seller/edit-toko') ? 'active' : '' }}">
-                                            <a href="{{ url('seller/edit-toko') }}"><i class="icon-store"></i>
-                                                Edit Toko
-                                                Saya</a>
-                                        </li>
-                                        {{-- <li><a href="#"><i class="icon-heart"></i> Favorite</a></li> --}}
-                                        <li><a style="cursor: pointer" aria-current="page"
-                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
-                                                    class="icon-power-switch"></i>Logout</a></li>
-                                    @endif
+                                    <form id="logout-form" action="{{ route('admin-logout') }}" method="POST"
+                                        style="display: none;">
+                                        @csrf
+                                    </form>
+                                    <li class="{{ Request::is('admin/dashboard') ? 'active' : '' }}"><a
+                                            href="{{ url('admin/dashboard') }}"><i class="icon-speed-fast"></i>
+                                            Dashboard</a>
+                                    </li>
+                                    <li
+                                        class="{{ Request::is('admin/kategori') || Request::is('admin/tambah-kategori') ? 'active' : '' }}">
+                                        <a href="{{ url('admin/kategori') }}"><i class="icon-list4"></i> Kategori</a>
+                                    </li>
+                                    <li
+                                        class="{{ Request::is('admin/merk') || Request::is('admin/tambah-merk') ? 'active' : '' }}">
+                                        <a href="{{ url('admin/merk') }}"><i class="icon-box"></i> Merk</a>
+                                    </li>
+                                    <li
+                                        class="{{ Request::is('seller/produk') || Request::is('seller/tambah-produk') ? 'active' : '' }}">
+                                        <a href="{{ url('seller/produk') }}"><i class="icon-bag"></i> Produk</a>
+                                    </li>
+                                    <li class="{{ Request::is('seller/penjualan') ? 'active' : '' }}"><a
+                                            href="{{ url('seller/penjualan') }}">
+                                            <i class="icon-cashier"></i> Penjualan</a>
+                                    </li>
+                                    <li class="{{ Request::is('profile/pesanan') ? 'active' : '' }}"><a
+                                            href="{{ url('profile/pesanan') }}"><i class="icon-papers"></i>
+                                            Pesanan</a></li>
+                                    <li
+                                        class="{{ Request::is('seller/rekening') || Request::is('seller/tambah-rekening') ? 'active' : '' }}">
+                                        <a href="{{ url('seller/rekening') }}"><i class="icon-credit-card"></i>
+                                            Rekening</a>
+                                    </li>
+                                    <li class="{{ Request::is('seller/saldo') ? 'active' : '' }}">
+                                        <a href="{{ url('seller/saldo') }}"><i class="icon-bag-dollar"></i>
+                                            Saldo</a>
+                                    </li>
+                                    <li class="{{ Request::is('admin/edit-website') ? 'active' : '' }}">
+                                        <a href="{{ url('admin/edit-website') }}"><i class="icon-link"></i>
+                                            Edit Website</a>
+                                    </li>
+                                    {{-- <li><a href="#"><i class="icon-heart"></i> Favorite</a></li> --}}
+                                    <li><a style="cursor: pointer" aria-current="page"
+                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
+                                                class="icon-power-switch"></i>Logout</a></li>
                                 </ul>
                             </div>
                         </aside>
@@ -310,7 +300,7 @@
                 </div>
                 <div class="col-lg-8">
                     <div class="ps-section__right">
-                        @yield('content_toko')
+                        @yield('content')
                     </div>
                 </div>
             </div>
@@ -830,6 +820,7 @@
     <script src="{{ asset('/js/sticky-sidebar.min.js') }}"></script>
     <script src="{{ asset('/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('/js/main.js') }}"></script>
+    <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
     <script>
         $(document).ready(function() {
             $("#btn-search").click(function() {

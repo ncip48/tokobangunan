@@ -74,3 +74,27 @@ Route::prefix('seller')->middleware('auth')->group(function () {
         Route::delete('rekening/{id}', [\App\Http\Controllers\TokoController::class, 'hapusRekening']);
     });
 });
+
+Route::prefix('admin')->group(function () {
+    Route::get('login', [\App\Http\Controllers\AdminController::class, 'login'])->name('admin-login');
+    Route::post('login', [\App\Http\Controllers\AdminController::class, 'loginAction'])->name('admin-login-action');
+    Route::middleware('auth.admin', 'is.admin')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin-home');
+        Route::get('kategori', [\App\Http\Controllers\AdminController::class, 'kategori'])->name('admin-kategori');
+        Route::get('tambah-kategori', [\App\Http\Controllers\AdminController::class, 'tambahKategori']);
+        Route::post('tambah-kategori', [\App\Http\Controllers\AdminController::class, 'tambahKategoriAction']);
+        Route::get('kategori/{id}', [\App\Http\Controllers\AdminController::class, 'editKategori']);
+        Route::patch('kategori', [\App\Http\Controllers\AdminController::class, 'editKategoriAction']);
+        Route::delete('kategori/{id}', [\App\Http\Controllers\AdminController::class, 'hapusKategori']);
+        Route::get('merk', [\App\Http\Controllers\AdminController::class, 'merk'])->name('admin-merk');
+        Route::get('tambah-merk', [\App\Http\Controllers\AdminController::class, 'tambahMerk']);
+        Route::post('tambah-merk', [\App\Http\Controllers\AdminController::class, 'tambahMerkAction']);
+        Route::get('merk/{id}', [\App\Http\Controllers\AdminController::class, 'editMerk']);
+        Route::patch('merk', [\App\Http\Controllers\AdminController::class, 'editMerkAction']);
+        Route::delete('merk/{id}', [\App\Http\Controllers\AdminController::class, 'hapusMerk']);
+
+        Route::get('edit-website', [\App\Http\Controllers\AdminController::class, 'editWebsite']);
+        Route::patch('edit-website', [\App\Http\Controllers\AdminController::class, 'editWebsiteAction']);
+        Route::post('logout', [\App\Http\Controllers\AdminController::class, 'logout'])->name('admin-logout');
+    });
+});
