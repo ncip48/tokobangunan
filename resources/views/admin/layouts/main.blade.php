@@ -11,6 +11,7 @@
 
 @php
     $user = \App\Models\User::where('id', Auth::user()->id)->first();
+    $site = \App\Models\Site::first();
 @endphp
 
 @auth
@@ -68,7 +69,7 @@
             <div class="container">
                 <div class="header__content-left" style="max-width:1870px">
                     <a class="ps-logo d-flex align-items-center" href="{{ url('/') }}"><img
-                            src="{{ asset('img/logo.png') }}" alt="" style="height: 60px">
+                            src="{{ asset('img/' . $site->logo_admin) }}" alt="" style="height: 60px">
                         <h3 class="text-white ml-2 mb-0"> | Administrator</h3>
                     </a>
                 </div>

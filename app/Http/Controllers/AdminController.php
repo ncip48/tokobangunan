@@ -291,7 +291,7 @@ class AdminController extends Controller
         $logo_seller = $request->file('logo_seller');
         if ($logo_seller) {
             File::delete(public_path('img/' . $site->logo_seller));
-            $new_name = rand() . '.' . $logo->getClientOriginalExtension();
+            $new_name = rand() . '.' . $logo_seller->getClientOriginalExtension();
             $logo_seller->move(public_path('img/'), $new_name);
             $site->logo_seller = $new_name;
         }
@@ -299,7 +299,7 @@ class AdminController extends Controller
         $logo_admin = $request->file('logo_admin');
         if ($logo_admin) {
             File::delete(public_path('img/' . $site->logo_admin));
-            $new_name = rand() . '.' . $logo->getClientOriginalExtension();
+            $new_name = rand() . '.' . $logo_admin->getClientOriginalExtension();
             $logo_admin->move(public_path('img/'), $new_name);
             $site->logo_admin = $new_name;
         }

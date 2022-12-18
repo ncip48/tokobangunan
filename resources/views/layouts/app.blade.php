@@ -7,6 +7,7 @@
         $cat['merk'] = \App\Models\Merk::where('id_kategori', $cat->id)->get();
         return $cat;
     });
+    $site = \App\Models\Site::first();
 @endphp
 
 @auth
@@ -36,7 +37,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Mart Bangunan - @yield('title')</title>
+    <title>{{ $site->name }} - @yield('title')</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -63,7 +64,7 @@
         <div class="header__top">
             <div class="container">
                 <div class="header__left">
-                    <p>Selamat Datang di Toko Bangunan</p>
+                    <p>Selamat Datang di {{ $site->name }}</p>
                 </div>
                 <div class="header__right">
                     <ul class="header__top-links">
@@ -76,7 +77,7 @@
         <div class="header__content">
             <div class="container">
                 <div class="header__content-left">
-                    <a class="ps-logo" href="{{ url('/') }}"><img src="{{ asset('img/logo.png') }}"
+                    <a class="ps-logo" href="{{ url('/') }}"><img src="{{ asset('img/' . $site->logo) }}"
                             alt=""></a>
                 </div>
                 <div class="header__content-center" id="id-search">
@@ -193,7 +194,7 @@
                         <li class="menu-item"><a href="{{ url('/toc') }}">Terms & Condition</a></li>
                     </ul>
                     <div class="ps-block--header-hotline inline">
-                        <p><i class="icon-telephone"></i>Hotline:<strong> +62 821-4365-2236</strong></p>
+                        <p><i class="icon-telephone"></i>Hotline:<strong> {{ $site->phone }}</strong></p>
                     </div>
                 </div>
             </div>

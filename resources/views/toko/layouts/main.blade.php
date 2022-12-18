@@ -11,6 +11,7 @@
 
 @php
     $toko = \App\Models\Toko::where('id_user', Auth::user()->id)->first();
+    $site = \App\Models\Site::first();
 @endphp
 
 @auth
@@ -40,7 +41,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Mart Bangunan Seller - @yield('title')</title>
+    <title>{{ $site->name }} Seller - @yield('title')</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -68,7 +69,7 @@
             <div class="container">
                 <div class="header__content-left" style="max-width:1870px">
                     <a class="ps-logo d-flex align-items-center" href="{{ url('/') }}"><img
-                            src="{{ asset('img/logo.png') }}" alt="" style="height: 60px">
+                            src="{{ asset('img/' . $site->logo_seller) }}" alt="" style="height: 60px">
                         <h3 class="text-white ml-2 mb-0"> | Penjual</h3>
                     </a>
                 </div>
