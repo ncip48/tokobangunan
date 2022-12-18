@@ -100,3 +100,15 @@ Route::prefix('admin')->group(function () {
         Route::post('logout', [\App\Http\Controllers\AdminController::class, 'logout'])->name('admin-logout');
     });
 });
+
+
+//for migration and seed
+Route::get('/migrate', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate');
+    return \Illuminate\Support\Facades\Artisan::output();
+});
+
+Route::get('/seed', function () {
+    \Illuminate\Support\Facades\Artisan::call('db:seed');
+    return \Illuminate\Support\Facades\Artisan::output();
+});

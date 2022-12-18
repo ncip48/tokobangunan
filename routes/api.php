@@ -32,3 +32,5 @@ Route::post('transaction', [App\Http\Controllers\TransaksiController::class, 'cr
 Route::post('token', [\App\Http\Controllers\TransaksiController::class, 'createToken']);
 
 Route::post('/callback', [CallbackController::class, 'callback_midtrans']);
+
+Route::post('upload-image', [App\Http\Controllers\UploadController::class, 'uploadImage']);
