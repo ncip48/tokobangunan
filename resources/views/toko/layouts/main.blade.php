@@ -391,11 +391,15 @@
                                     <button class="ps-btn">Subscribe</button>
                                 </div>
                                 <ul class="ps-list--social">
-                                    <li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-                                    <li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a class="google-plus" href="#"><i class="fa fa-google-plus"></i></a>
+                                    <li><a class="facebook" href="{{ $site->facebook }}"><i
+                                                class="fa fa-facebook"></i></a></li>
+                                    <li><a class="twitter" href="{{ $site->twitter }}"><i
+                                                class="fa fa-twitter"></i></a></li>
+                                    <li><a class="google-plus" href="{{ $site->whatsapp }}"><i
+                                                class="fa fa-whatsapp"></i></a>
                                     </li>
-                                    <li><a class="instagram" href="#"><i class="fa fa-instagram"></i></a></li>
+                                    <li><a class="instagram" href="{{ $site->instagram }}"><i
+                                                class="fa fa-instagram"></i></a></li>
                                 </ul>
                             </form>
                         </aside>
@@ -403,13 +407,7 @@
                 </div>
             </div>
             <div class="ps-footer__copyright">
-                <p>© 2021 Martfury. All Rights Reserved</p>
-                <p><span>We Using Safe Payment For:</span><a href="#"><img src="img/payment-method/1.jpg"
-                            alt=""></a><a href="#"><img src="img/payment-method/2.jpg"
-                            alt=""></a><a href="#"><img src="img/payment-method/3.jpg"
-                            alt=""></a><a href="#"><img src="img/payment-method/4.jpg"
-                            alt=""></a><a href="#"><img src="img/payment-method/5.jpg"
-                            alt=""></a></p>
+                <p>©{{ date('Y') }} {{ $site->name }}. All Rights Reserved</p>
             </div>
         </div>
     </footer>
