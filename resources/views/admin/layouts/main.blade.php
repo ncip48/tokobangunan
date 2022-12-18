@@ -286,6 +286,14 @@
                                         <a href="{{ url('seller/saldo') }}"><i class="icon-bag-dollar"></i>
                                             Saldo</a>
                                     </li>
+                                </ul>
+                            </div>
+                            <div class="ps-widget__content mt-4">
+                                <ul>
+                                    <li class="{{ Request::is('admin/syarat-ketentuan') ? 'active' : '' }}">
+                                        <a href="{{ url('admin/syarat-ketentuan') }}"><i class="icon-file-check"></i>
+                                            Syarat & Ketentuan</a>
+                                    </li>
                                     <li class="{{ Request::is('admin/edit-website') ? 'active' : '' }}">
                                         <a href="{{ url('admin/edit-website') }}"><i class="icon-link"></i>
                                             Edit Website</a>

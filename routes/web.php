@@ -95,6 +95,8 @@ Route::prefix('admin')->group(function () {
 
         Route::get('edit-website', [\App\Http\Controllers\AdminController::class, 'editWebsite']);
         Route::patch('edit-website', [\App\Http\Controllers\AdminController::class, 'editWebsiteAction']);
+        Route::get('syarat-ketentuan', [\App\Http\Controllers\AdminController::class, 'syaratKetentuan']);
+        Route::patch('syarat-ketentuan', [\App\Http\Controllers\AdminController::class, 'syaratKetentuanAction']);
         Route::post('logout', [\App\Http\Controllers\AdminController::class, 'logout'])->name('admin-logout');
     });
 });

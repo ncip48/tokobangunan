@@ -326,4 +326,25 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Website berhasil diubah');
     }
+
+    public function syaratKetentuan()
+    {
+        $site = Site::first();
+        return view('admin.sk', compact('site'));
+    }
+
+    public function syaratKetentuanAction(Request $request)
+    {
+        $this->validate($request, [
+            'sk' => 'required',
+        ], [
+            'sk.required' => 'Syarat dan ketentuan tidak boleh kosong',
+        ]);
+
+        $site = Site::first();
+        $site->sk = $request->sk;
+        $site->save();
+
+        return redirect()->back()->with('success', 'Syarat dan ketentuan berhasil diubah');
+    }
 }
