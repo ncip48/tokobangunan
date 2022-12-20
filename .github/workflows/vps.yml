@@ -22,17 +22,16 @@ jobs:
             cd /home/kel5/tb_temp
             git pull origin aws
 
-      - name: Remove semua container dan images yang sudah ada
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PORT: ${{ secrets.PORT }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          script: |
-            docker stop $(docker ps -aq)
-            docker rm $(docker ps -aq)
-            docker rmi $(docker images -a -q)
+      # - name: Remove semua container dan images yang sudah ada
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     USERNAME: ${{ secrets.USERNAME }}
+      #     PORT: ${{ secrets.PORT }}
+      #     PASSWORD: ${{ secrets.PASSWORD }}
+      #     script: |
+      #       docker stop $(docker ps -aq)
+      #       docker rm $(docker ps -aq)
 
       - name: Build image baru dan container baru
         uses: appleboy/ssh-action@master
