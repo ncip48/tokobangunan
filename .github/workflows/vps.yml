@@ -11,18 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      # - name: Copy isi repository ke existing folder
-      #   uses: appleboy/scp-action@master
-      #   env:
-      #     HOST: ${{ secrets.HOST }}
-      #     USERNAME: ${{ secrets.USERNAME }}
-      #     PORT: ${{ secrets.PORT }}
-      #     PASSWORD: ${{ secrets.PASSWORD }}
-      #   with:
-      #     source: "."
-      #     target: "/home/kel5/tb_temp"
-
-      - name: Executing remote command
+      - name: Pull dari repository ini
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -32,3 +21,32 @@ jobs:
           script: |
             cd /home/kel5/tb_temp
             git pull origin aws
+
+      - name: Remove semua container yang sudah ada
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PORT: ${{ secrets.PORT }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          script: docker rm $(docker ps -aq)
+
+      - name: Remove semua images yang sudah ada
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PORT: ${{ secrets.PORT }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          script: docker rmi $(docker images -a -q)
+
+      - name: Build image baru dan container baru
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PORT: ${{ secrets.PORT }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          script: |
+            docker build -t tokobangunan .
+            docker run -d -it -p 8081:80 tokobangunan
