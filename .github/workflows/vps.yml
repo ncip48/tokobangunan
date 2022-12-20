@@ -50,5 +50,6 @@ jobs:
           PORT: ${{ secrets.PORT }}
           PASSWORD: ${{ secrets.PASSWORD }}
           script: |
+            cd /home/kel5/tb_temp
             docker build -t tokobangunan .
             docker run -d -it -p 8081:80 tokobangunan
