@@ -29,4 +29,4 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           PORT: ${{ secrets.PORT }}
           PASSWORD: ${{ secrets.PASSWORD }}
-          script: echo "AKU SAYANG ELOK SELAMANYA"
+          script: git pull origin aws
