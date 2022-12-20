@@ -29,4 +29,6 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           PORT: ${{ secrets.PORT }}
           PASSWORD: ${{ secrets.PASSWORD }}
-          script: git pull origin aws
+          script: |
+            cd /home/kel5/tb_temp
+            git pull origin aws
