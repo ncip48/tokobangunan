@@ -1,5 +1,6 @@
 <?php
 
+use Dcblogdev\Dropbox\Facades\Dropbox;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -111,4 +112,16 @@ Route::get('/migrate', function () {
 Route::get('/seed', function () {
     \Illuminate\Support\Facades\Artisan::call('db:seed');
     return \Illuminate\Support\Facades\Artisan::output();
+});
+
+
+//for route dropbox
+Route::group(['middleware' => ['web', 'auth']], function () {
+    Route::get('dropbox/connect', function () {
+        return Dropbox::connect();
+    });
+
+    Route::get('dropbox/disconnect', function () {
+        return Dropbox::disconnect('app/dropbox');
+    });
 });
