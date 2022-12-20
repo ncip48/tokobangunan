@@ -9,6 +9,7 @@
         "brainfoolong/cryptojs-aes-php": "^2.1",
         "dcblogdev/laravel-dropbox": "^3.0",
         "guzzlehttp/guzzle": "^7.2",
+        "imagekit/imagekit": "^3.0",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",

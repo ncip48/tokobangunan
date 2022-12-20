@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use ImageKit\ImageKit;
 use App\Models\Kategori;
 use App\Models\Merk;
 use App\Models\Site;
@@ -301,7 +302,23 @@ class AdminController extends Controller
             File::delete(public_path('img/' . $site->logo_admin));
             $new_name = rand() . '.' . $logo_admin->getClientOriginalExtension();
             $logo_admin->move(public_path('img/'), $new_name);
-            $site->logo_admin = $new_name;
+            // $site->logo_admin = $new_name;
+            $public_key = env('IMAGEKIT_KEY');
+            $your_private_key = env('IMAGEKIT_PRIVATE_KEY');
+            $url_end_point = env('IMAGEKIT_ENDPOINT');
+
+            $imageKit = new ImageKit(
+                $public_key,
+                $your_private_key,
+                $url_end_point
+            );
+
+            // Upload Image - Binary
+            $uploadFile = $imageKit->uploadFile([
+                "file" => fopen(public_path('img') . '/' . $new_name, "r"),
+                "fileName" => $new_name
+            ]);
+            $site->logo_admin = $uploadFile->result->url;
         }
 
         $favicon = $request->file('favicon');

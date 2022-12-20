@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Dcblogdev\Dropbox\Facades\Dropbox;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use ImageKit\ImageKit;
 
 class UploadController extends Controller
 {
@@ -14,26 +14,35 @@ class UploadController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $imageName = time() . '.' . $request->image->extension();
-
         // $path = Storage::disk('s3')->put('images', $request->image,  'public');
         // $path = Storage::disk('s3')->url($path);
 
-        //create upload image to dropbox
-
         $image = $request->file('image');
+        $imageName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('img'), $imageName);
 
-        // $file = Dropbox::files()->createFolder('imagetb');
-        // $file = Dropbox::files()->upload($imageName, $image);
-        $file = Dropbox::files()->listContents($path = '');
-        $file = Dropbox::files()->search('vps');
+        $public_key = env('IMAGEKIT_KEY');
+        $your_private_key = env('IMAGEKIT_PRIVATE_KEY');
+        $url_end_point = env('IMAGEKIT_ENDPOINT');
 
-        /* Store $imageName name in DATABASE from HERE */
+        $imageKit = new ImageKit(
+            $public_key,
+            $your_private_key,
+            $url_end_point
+        );
+
+        // Upload Image - Binary
+        $uploadFile = $imageKit->uploadFile([
+            "file" => fopen(public_path('img') . '/' . $imageName, "r"),
+            "fileName" => $imageName
+        ]);
+
+        $file = $uploadFile;
 
         $json = [
             'success' => true,
             'message' => 'Image uploaded successfully',
-            'image' => $file
+            'image' => $file->result->url
         ];
         return response()->json($json);
     }

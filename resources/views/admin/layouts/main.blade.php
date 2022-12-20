@@ -69,7 +69,7 @@
             <div class="container">
                 <div class="header__content-left" style="max-width:1870px">
                     <a class="ps-logo d-flex align-items-center" href="{{ url('/') }}"><img
-                            src="{{ asset('img/' . $site->logo_admin) }}" alt="" style="height: 60px">
+                            src="{{ $site->logo_admin }}" alt="" style="height: 60px">
                         <h3 class="text-white ml-2 mb-0"> | Administrator</h3>
                     </a>
                 </div>
