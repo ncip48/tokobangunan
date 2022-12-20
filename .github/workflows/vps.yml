@@ -28,5 +28,6 @@ jobs:
           host: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           PORT: ${{ secrets.PORT }}
-          PASSWORD: mbahcip123
+          # PASSWORD: mbahcip123
+          KEY: ${{ secrets.SSHKEY }}
           script: whoami
