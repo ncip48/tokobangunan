@@ -32,6 +32,7 @@ jobs:
           script: |
             docker stop $(docker ps -aq)
             docker rm $(docker ps -aq)
+            docker system prune -a
 
       - name: Build image baru dan container baru
         uses: appleboy/ssh-action@master
