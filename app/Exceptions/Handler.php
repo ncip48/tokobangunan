@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Http\Controllers\Api\ResponseController;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -46,5 +47,14 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    protected function unauthenticated($request, \Illuminate\Auth\AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            return ResponseController::customResponse(false, 'Unauthenticated', null, 401);
+        }
+
+        return redirect()->guest(route('login'));
     }
 }
